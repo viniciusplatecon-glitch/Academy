@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha de Treino - Vi & Yas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --bg:#14181A;
+    --panel:#1C2224;
+    --panel-2:#222A2C;
+    --ink:#ECE8DE;
+    --muted:#7C8386;
+    --accent:#1a365d; 
+    --accent-ink:#ECE8DE;
+    --accent-2:#8FBF3F;
+    --line: rgba(236,232,222,0.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background-color:var(--bg);
+    color:var(--ink);
+    font-family:'JetBrains Mono', monospace;
+    min-height:100vh;
+    overflow-x: hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Oswald', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    margin:0;
+  }
+  .wrap{max-width:720px;margin:0 auto; padding: 20px 16px 120px;}
+  .icon{width:20px; height:20px; display:block;}
+
+  /* ---------- ANIMAÇÕES ---------- */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulseRunner {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; fill: var(--accent-2); }
+  }
+  @keyframes liftWeight {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes fillBottle {
+    0% { height: 10%; }
+    100% { height: 100%; }
+  }
+
+  .animated-fade {
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* ---------- CARREGAMENTO ---------- */
+  .loader-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    text-align: center;
+  }
+  .runner-icon {
+    width: 80px;
+    height: 80px;
+    animation: pulseRunner 1.2s infinite ease-in-out;
+    fill: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  /* ---------- ANIMAÇÃO DE CÁLCULO ---------- */
+  .calc-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background: var(--panel-2);
+    border: 1px dashed var(--accent);
+    margin-bottom: 16px;
+    border-radius: 4px;
+    animation: fadeInUp 0.3s ease;
+  }
+  .calc-anim-icons {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 15px;
+    align-items: flex-end;
+  }
+  .anim-weight {
+    width: 40px;
+    height: 40px;
+    fill: var(--accent-2);
+    animation: liftWeight 0.8s infinite ease-in-out;
+  }
+  .anim-bottle-container {
+    width: 20px;
+    height: 40px;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .anim-bottle-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #3182ce;
+    animation: fillBottle 1.5s infinite ease-in-out;
+  }
+
+  /* ---------- LOGIN RÁPIDO ---------- */
+  .loginWrap{max-width:420px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:24px;}
+  .loginTitle{text-align:center; margin-bottom:6px; font-size:24px;}
+  .loginTitle span{color:var(--accent);}
+  .loginSub{text-align:center; color:var(--muted); font-size:11px; letter-spacing:0.1em; margin-bottom:30px;}
+  
+  .lockerBig{
+    background:var(--panel); border:1px solid var(--line); border-top:4px solid var(--muted);
+    padding:24px 18px; margin-bottom:16px; cursor:pointer; 
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .lockerBig:hover{
+    transform: translateY(-4px);
+    border-top-color:var(--accent);
+    background: var(--panel-2);
+  }
+  .lockerBig .tag{font-size:10px; color:var(--muted); letter-spacing:0.12em; margin-bottom:4px;}
+  .lockerBig .name{font-family:'Oswald',sans-serif; font-size:26px; font-weight:700; text-transform: uppercase;}
+  .lockerBig .hint{font-size:11px; color:var(--muted); margin-top:8px;}
+
+  /* ---------- CONTROLES ---------- */
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;}
+  .color-picker-wrap { display: flex; align-items: center; gap: 10px; }
+  .color-picker-wrap input[type="color"] { width: 50px; height: 38px; padding: 0; cursor: pointer; border: 1px solid var(--line); }
+  input, select, textarea{
+    width:100%; background:var(--bg); border:1px solid var(--line); color:var(--ink);
+    padding:9px 10px; font-family:'JetBrains Mono',monospace; font-size:14px;
+  }
+  textarea{resize:vertical; min-height:64px;}
+  input:focus, select:focus, textarea:focus{outline:1px solid var(--accent); border-color:var(--accent);}
+  .btn{
+    background:var(--accent); color:var(--accent-ink); border:none; padding:11px 16px; font-family:'Oswald',sans-serif;
+    text-transform:uppercase; font-weight:600; letter-spacing:0.05em; cursor:pointer; font-size:13px;
+    display: inline-block; text-align: center; text-decoration: none;
+  }
+  .btn:hover{filter:brightness(1.2);}
+  .btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line);}
+  .btn.ghost:hover{border-color:var(--accent); color:var(--accent);}
+  .btn.small{padding:7px 10px; font-size:11px;}
+  .btnRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .rowGrid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .panel{background:var(--panel); border:1px solid var(--line); padding:20px; margin-bottom:16px; border-radius: 4px;}
+  .tear{border:none; border-top:1px dashed var(--line); margin:20px 0;}
+  .empty{color:var(--muted); font-size:12px; padding:16px 0; text-align:center;}
+  .iconBtn{background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; padding:2px 6px;}
+  .iconBtn:hover{color:var(--accent);}
+  .hint{font-size:11px; color:var(--muted); margin-top:8px; line-height:1.5;}
+  .toast{position:fixed; bottom:88px; left:50%; transform:translateX(-50%); background:var(--panel-2); border:1px solid var(--accent); color:var(--ink); padding:9px 16px; font-size:12px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:99;}
+  .toast.show{opacity:1;}
+
+  /* ---------- TOP HEADER ---------- */
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--line);}
+  .topbar .left{display:flex; align-items:center; gap:10px;}
+  .avatar{
+    width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:15px; cursor:pointer; border:none; flex-shrink:0;
+    color: #fff !important;
+  }
+  .avatarSmall{width:30px; height:30px; font-size:12px;}
+  .wordmark{font-size:15px; letter-spacing:0.06em;}
+  .wordmark span{color:var(--accent);}
+  .menuBtn{background:none; border:1px solid var(--line); color:var(--muted); font-size:11px; padding:6px 10px; cursor:pointer; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.05em;}
+  .menuBtn:hover{color:var(--accent); border-color:var(--accent);}
+  .menuPanel{position:fixed; top:0; right:0; bottom:0; width:280px; background:var(--panel); border-left:1px solid var(--line); z-index:70; padding:20px; transform:translateX(100%); transition:transform .2s;}
+  .menuPanel.open{transform:translateX(0);}
+  .menuOverlay{position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:65; opacity:0; pointer-events:none; transition:opacity .2s;}
+  .menuOverlay.open{opacity:1; pointer-events:auto;}
+  .menuPanel h3{font-size:14px; margin-bottom:16px;}
+  .menuItem{padding:11px 0; border-bottom:1px solid var(--line); font-size:12.5px; cursor:pointer; color:var(--ink);}
+  .menuItem:hover{color:var(--accent);}
+  .menuItem.danger:hover{color:#ff6b6b;}
+
+  /* ---------- BOTTOM NAV ---------- */
+  .bottomNav{
+    position:fixed; bottom:0; left:0; right:0; background:var(--panel); border-top:1px solid var(--line);
+    display:flex; justify-content:center; z-index:40;
+  }
+  .bottomNavInner{max-width:720px; width:100%; display:flex;}
+  .navBtn{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 4px 8px;
+    background:none; border:none; cursor:pointer; color:var(--muted);
+    font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:9.5px; letter-spacing:0.04em;
+  }
+  .navBtn.active{color:var(--accent);}
+  .navBtn .icon{margin:0 auto;}
+
+  /* ---------- PLATES ---------- */
+  .plates{display:flex; gap:14px; flex-wrap:wrap; margin-top:18px;}
+  .plate{
+    flex:1; min-width:140px; border:2px solid var(--line); border-radius:50%; aspect-ratio:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    background: radial-gradient(circle at 35% 30%, var(--panel-2), var(--panel) 70%);
+  }
+  .plate .val{font-family:'Oswald',sans-serif; font-size:26px; font-weight:700;}
+  .plate .lbl{font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; padding:0 10px;}
+  .plate.accent{border-color:var(--accent);}
+  .plate.accent .val{color:var(--accent);}
+  .plate.accent2{border-color:var(--accent-2);}
+  .plate.accent2 .val{color:var(--accent-2);}
+
+  /* ---------- LISTAS E TREINOS ---------- */
+  .ledger{border-top:1px solid var(--line);}
+  .ledgerRow{
+    display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center;
+    padding:11px 2px; border-bottom:1px solid var(--line); font-size:13px;
+  }
+  .ledgerRow .meta{color:var(--muted); font-size:11px;}
+  .exRow{display:grid; grid-template-columns:auto 2fr 1fr 1fr 1fr auto; gap:8px; align-items:center; padding:8px 2px; border-bottom:1px solid var(--line); font-size:12.5px;}
+  .exRow .h{color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.06em;}
+  .exRow input[type=checkbox]{width:16px; accent-color:var(--accent-2);}
+  .exRow.done{opacity:0.55;}
+  .exRow.done .exName{text-decoration:line-through; color:var(--muted);}
+  .dayCard{margin-bottom:16px; border:1px solid var(--line); border-radius: 4px; overflow: hidden;}
+  .dayHead{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--panel-2); gap:10px;}
+  .dayHead h3{font-size:15px;}
+  .dayBody{padding:12px 14px;}
+
+  /* ---------- WEEK STRIP ---------- */
+  .weekStrip{display:flex; justify-content:space-between; gap:6px; margin-bottom:18px;}
+  .dayDot{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer;}
+  .dayDot .lbl{font-size:9px; color:var(--muted); text-transform:uppercase;}
+  .dayDot .circ{
+    width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif; font-size:12px; color:var(--muted);
+  }
+  .dayDot.done .circ{background:var(--accent-2); border-color:var(--accent-2); color:#14181A;}
+  .dayDot.today .circ{border-color:var(--accent);}
+
+  .chartWrap{width:100%; overflow-x:auto;}
+
+  /* ---------- CRONÔMETRO FLUTUANTE ---------- */
+  .timerBar{
+    position:fixed; bottom:64px; left:0; right:0; background:var(--panel-2); border-top:1px solid var(--accent);
+    padding:8px 16px; display:flex; align-items:center; justify-content:space-between; z-index:35;
+    font-family:'JetBrains Mono',monospace; font-size:13px;
+  }
+  .timerBar .time{font-size:18px; font-weight:700; color:var(--accent-2);}
+  .timerBar .timerBtnRow{display:flex; gap:6px;}
+
+  /* ---------- SEÇÃO DE ÁGUA ---------- */
+  .waterWidget { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+  .waterProgress { flex: 1; height: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; position: relative;}
+  .waterBar { height: 100%; background: #3182ce; transition: width 0.3s; }
+
+  /* ---------- HABITOS/METAS ---------- */
+  .metaRow { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .metaRow input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+  .metaRow.done span { text-decoration: line-through; color: var(--muted); }
+  .progressBar { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin: 10px 0; }
+  .progressBarInner { height: 100%; background: var(--accent-2); width: 0%; transition: width 0.3s; }
+
+  /* ---------- MURAL DE POSTS ---------- */
+  .postCard{background:var(--panel); border:1px solid var(--line); margin-bottom:14px; border-radius: 4px; overflow: hidden;}
+  .postHead{display:flex; align-items:center; gap:10px; padding:12px 14px 8px;}
+  .postHead .who{font-family:'Oswald',sans-serif; font-size:13px; text-transform:uppercase;}
+  .postHead .when{font-size:10px; color:var(--muted);}
+  .postText{padding:0 14px 10px; font-size:13.5px; line-height:1.5; white-space:pre-wrap;}
+  .postImg{width:100%; display:block; max-height:420px; object-fit:cover; border-bottom: 1px solid var(--line);}
+  .postFoot{display:flex; align-items:center; gap:10px; padding:8px 14px 12px; border-top: 1px solid var(--line); flex-wrap: wrap;}
+  .likeBtn{background:none; border:1px solid var(--line); color:var(--muted); padding:6px 12px; font-size:12px; cursor:pointer; font-family:'JetBrains Mono',monospace;}
+  .likeBtn.liked{border-color:var(--accent); color:var(--accent);}
+  .composer textarea{margin-bottom:10px;}
+  .fileRow{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .fileRow .fname{font-size:11px; color:var(--muted);}
+  .previewImg{max-width:100%; max-height:160px; margin-bottom:10px; border:1px solid var(--line); display:none;}
+  
+  /* Comentários */
+  .commentsSec { width: 100%; background: var(--panel-2); padding: 10px 14px; font-size: 12px; border-top: 1px solid var(--line); }
+  .commentInputWrap { display: flex; gap: 8px; margin-top: 8px; }
+  .commentInputWrap input { padding: 6px 10px; font-size: 12px; }
+  .commentRow { margin-bottom: 6px; line-height: 1.4; }
+  .commentRow strong { color: var(--accent); }
+
+  @media (max-width:480px){
+    .rowGrid{grid-template-columns:1fr;}
+    .exRow{grid-template-columns:auto 1.6fr 1fr 1fr 1fr auto;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Animação do corredor ao abrir o app -->
+  <div class="loader-screen">
+    <svg class="runner-icon" viewBox="0 0 24 24">
+      <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l.89-4.25-1.99-1c-.5-.25-.7-.85-.45-1.35l1-2c.4-.8 1.25-1.28 2.15-1.28H15c.55 0 1 .45 1 1v2.5h2c.55 0 1 .45 1 1s-.45 1-1 1h-2.5c-.55 0-1-.45-1-1v-2h-.6l-1.4 7H9.89zm1.42 2.22l.5-2.5h3.6l1.2 6H15.1l-1.5-4.5-2.29-1.28z"/>
+    </svg>
+    <div style="font-family:'Oswald', sans-serif; font-size:16px; letter-spacing:0.1em; text-transform:uppercase;">Preparando seu Treino...</div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- Audio simples para o Cronômetro -->
+<audio id="timerBeep" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-500.wav" preload="auto"></audio>
+
+<script>
+const STORAGE_OK = !!(window.storage || window.localStorage);
+const ICONS = {
+  treinos: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9v6M2 10.5v3M8 6v12M16 6v12M20 10.5v3M22 9v6M8 12h8"/></svg>',
+  progresso: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h4v4"/></svg>',
+  calc: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M7 7h10M7 11h2M11 11h2M15 11h2M7 15h2M11 15h2M15 15h2"/></svg>',
+  mural: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/></svg>'
+};
+const DIAS_SEMANA = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+
+// SEU NOVO TREINO CONFIGURADO DIRETAMENTE DA PLANILHA EXCEL
+const defaultTreinosVini = [
+  {
+    id: "vini_seg", nome: "Treino Segunda-Feira: Peito / Ombro / Bíceps",
+    exercicios: [
+      { id: "v_sg1", nome: "Alongamento Barra", series: "4", reps: "10-12", carga: "0", feito: false },
+      { id: "v_sg2", nome: "Aquecimento Elástico", series: "3", reps: "15", carga: "0", feito: false },
+      { id: "v_sg3", nome: "Crucifixo Voador ou Halteres", series: "4", reps: "10-12", carga: "15", feito: false },
+      { id: "v_sg4", nome: "Supino Inclinado", series: "4", reps: "10", carga: "20", feito: false },
+      { id: "v_sg5", nome: "Supino Máquina", series: "4", reps: "12", carga: "40", feito: false },
+      { id: "v_sg6", nome: "Elevação Frontal com Corda (Ombro)", series: "4", reps: "12", carga: "15", feito: false },
+      { id: "v_sg7", nome: "Bíceps com Rotação Halteres", series: "4", reps: "10", carga: "12", feito: false },
+      { id: "v_sg8", nome: "Bíceps Scott ou Polia", series: "4", reps: "12", carga: "20", feito: false }
+    ]
+  },
+  {
+    id: "vini_ter", nome: "Treino Terça-Feira: Posterior de Coxa",
+    exercicios: [
+      { id: "v_tr1", nome: "Cadeira Adutora", series: "4", reps: "15", carga: "45", feito: false },
+      { id: "v_tr2", nome: "Panturrilha", series: "4", reps: "15", carga: "50", feito: false },
+      { id: "v_tr3", nome: "Stiff Máquina", series: "4", reps: "10-12", carga: "30", feito: false },
+      { id: "v_tr4", nome: "Mesa Flexora", series: "4", reps: "10-12", carga: "25", feito: false },
+      { id: "v_tr5", nome: "Cadeira Flexora", series: "4", reps: "12", carga: "35", feito: false },
+      { id: "v_tr6", nome: "Elevação Pélvica", series: "4", reps: "10-12", carga: "40", feito: false },
+      { id: "v_tr7", nome: "Leg-press 45", series: "4", reps: "10", carga: "160", feito: false },
+      { id: "v_tr8", nome: "Cadeira Extensora", series: "3", reps: "12", carga: "45", feito: false },
+      { id: "v_tr9", nome: "Cadeira Abdutora", series: "4", reps: "15", carga: "50", feito: false }
+    ]
+  },
+  {
+    id: "vini_qua", nome: "Treino Quarta-Feira: Costas e Tríceps",
+    exercicios: [
+      { id: "v_qa1", nome: "Barra Fixa (Aberta e Fechada)", series: "4", reps: "Até a falha", carga: "0", feito: false },
+      { id: "v_qa2", nome: "Remada Cavalinho", series: "4", reps: "10", carga: "35", feito: false },
+      { id: "v_qa3", nome: "Puxada Baixa Pronada", series: "4", reps: "12", carga: "45", feito: false },
+      { id: "v_qa4", nome: "Puxada Alta Supinada", series: "4", reps: "10", carga: "50", feito: false },
+      { id: "v_qa5", nome: "Puxador Alto Pronado", series: "4", reps: "12", carga: "45", feito: false },
+      { id: "v_qa6", nome: "Tríceps Barra Reta Pegada Inversa", series: "4", reps: "12", carga: "30", feito: false },
+      { id: "v_qa7", nome: "Tríceps Francês Polia", series: "4", reps: "10", carga: "20", feito: false }
+    ]
+  },
+  {
+    id: "vini_qui", nome: "Treino Quinta-Feira: Quadríceps",
+    exercicios: [
+      { id: "v_qi1", nome: "Cadeira Adutora", series: "4", reps: "15", carga: "45", feito: false },
+      { id: "v_qi2", nome: "Mesa Flexora", series: "4", reps: "12", carga: "25", feito: false },
+      { id: "v_qi3", nome: "Agachamento Livre", series: "4", reps: "8-10", carga: "40", feito: false },
+      { id: "v_qi4", nome: "Hack Máquina", series: "4", reps: "10", carga: "60", feito: false },
+      { id: "v_qi5", nome: "Leg-press 45", series: "4", reps: "10-12", carga: "180", feito: false },
+      { id: "v_qi6", nome: "Cadeira Extensora", series: "4", reps: "12-15", carga: "50", feito: false }
+    ]
+  },
+  {
+    id: "vini_sex", nome: "Treino Sexta-Feira: Ombros / Braços / Antebraço",
+    exercicios: [
+      { id: "v_sx1", nome: "Elevação Lateral em pé", series: "4", reps: "12-15", carga: "10", feito: false },
+      { id: "v_sx2", nome: "Desenvolvimento Militar", series: "4", reps: "10", carga: "15", feito: false },
+      { id: "v_sx3", nome: "Elevação Frontal Polia Corda", series: "4", reps: "12", carga: "15", feito: false },
+      { id: "v_sx4", nome: "Elevação Frontal Barra W", series: "4", reps: "12", carga: "10", feito: false },
+      { id: "v_sx5", nome: "Elevação Lateral Sentado", series: "4", reps: "12", carga: "8", feito: false },
+      { id: "v_sx6", nome: "Crucifixo Unilateral Cross Over", series: "3", reps: "12", carga: "10", feito: false },
+      { id: "v_sx7", nome: "Crucifixo Inverso Máquina", series: "4", reps: "12", carga: "40", feito: false },
+      { id: "v_sx8", nome: "Tríceps Francês na Polia Corda", series: "4", reps: "12", carga: "20", feito: false },
+      { id: "v_sx9", nome: "Tríceps Testa na Polia Barra W", series: "4", reps: "12", carga: "25", feito: false },
+      { id: "v_sx10", nome: "Bíceps Rosca Scott", series: "4", reps: "10-12", carga: "12", feito: false },
+      { id: "v_sx11", nome: "Bíceps Unilateral Esticado Braço Cross", series: "4", reps: "12", carga: "15", feito: false },
+      { id: "v_sx12", nome: "Rosca Inversa (Antebraço)", series: "4", reps: "12", carga: "10", feito: false }
+    ]
+  }
+];
+
+const defaultTreinosYas = [
+  {
+    id: "yas_ta", nome: "Treino A - Quadríceps / Glúteo",
+    exercicios: [
+      { id: "y1", nome: "Agachamento Búlgaro", series: "4", reps: "10", carga: "8", feito: false },
+      { id: "y2", nome: "Elevação Pélvica", series: "4", reps: "10-12", carga: "40", feito: false },
+      { id: "y3", nome: "Cadeira Extensora", series: "4", reps: "12", carga: "35", feito: false },
+      { id: "y4", nome: "Leg Press Horizontal", series: "3", reps: "12", carga: "80", feito: false },
+      { id: "y5", nome: "Cadeira Abdutora", series: "4", reps: "15", carga: "45", feito: false }
+    ]
+  },
+  {
+    id: "yas_tb", nome: "Treino B - Membros Superiores",
+    exercicios: [
+      { id: "y6", nome: "Puxada Aberta", series: "4", reps: "10-12", carga: "25", feito: false },
+      { id: "y7", nome: "Remada Baixa c/ Triângulo", series: "3", reps: "12", carga: "20", feito: false },
+      { id: "y8", nome: "Desenvolvimento Halteres", series: "3", reps: "10", carga: "5", feito: false },
+      { id: "y9", nome: "Elevação Lateral Halteres", series: "3", reps: "12", carga: "3", feito: false },
+      { id: "y10", nome: "Tríceps Corda", series: "3", reps: "12", carga: "15", feito: false },
+      { id: "y11", nome: "Rosca Direta c/ Halteres", series: "3", reps: "12", carga: "4", feito: false }
+    ]
+  },
+  {
+    id: "yas_tc", nome: "Treino C - Posterior de Coxa / Glúteo",
+    exercicios: [
+      { id: "y12", nome: "Stiff c/ Halteres", series: "4", reps: "10-12", carga: "12", feito: false },
+      { id: "y13", nome: "Mesa Flexora", series: "4", reps: "10-12", carga: "20", feito: false },
+      { id: "y14", nome: "Cadeira Adutora", series: "3", reps: "15", carga: "35", feito: false },
+      { id: "y15", nome: "Glúteo no Cabo", series: "4", reps: "12", carga: "10", feito: false },
+      { id: "y16", nome: "Abdominal Infra", series: "3", reps: "15", carga: "0", feito: false }
+    ]
+  }
+];
+
+let state = {
+  perfis: { 
+    p1:{nome:'Vinicius', cor:'#1a365d'}, 
+    p2:{nome:'Yasmin', cor:'#f4b5c4'} 
+  },
+  session: null,
+  perfilAtivo: 'p1',
+  tab: 'treinos',
+  calc: { p1:null, p2:null },
+  progresso: { p1:[], p2:[] },
+  treinos: { p1:defaultTreinosVini, p2:defaultTreinosYas },
+  treinoLog: { p1:[], p2:[] },
+  mural: [],
+  metas: [
+    { id: "m1", texto: "Treinar juntos 4x na semana", concluida: false },
+    { id: "m2", texto: "Beber água conforme a meta todos os dias", concluida: false },
+    { id: "m3", texto: "Bater recorde pessoal em algum exercício", concluida: false },
+    { id: "m4", texto: "Subir 1 foto motivacional por semana no mural", concluida: false }
+  ],
+  water: { p1: 0, p2: 0 },
+  menuOpen: false,
+  calculando: false, 
+  loaded: false
+};
+
+// Cronômetro State
+let timerInterval = null;
+let timerTimeLeft = 0;
+let timerRunning = false;
+
+if(!window.storage){
+  window.storage = {
+    get: async (key) => {
+      const val = localStorage.getItem(key);
+      return val ? { value: val } : null;
+    },
+    set: async (key, val) => {
+      localStorage.setItem(key, val);
+      return true;
+    }
+  };
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+async function safeGet(key, shared){
+  try{ const r = await window.storage.get(key, shared); return r ? JSON.parse(r.value) : null; }
+  catch(e){ return null; }
+}
+async function safeSet(key, value, shared){
+  try{ const r = await window.storage.set(key, JSON.stringify(value), shared); if(!r) toast('Não foi possível salvar agora.'); return r; }
+  catch(e){ toast('Erro ao salvar.'); return null; }
+}
+
+async function loadAll(){
+  if(STORAGE_OK){
+    const perfis = await safeGet('perfis', true); if(perfis) state.perfis = perfis;
+    const mural = await safeGet('mural', true); if(mural) state.mural = mural;
+    const metas = await safeGet('metas', true); if(metas) state.metas = metas;
+    const water = await safeGet('water_daily', true); if(water) state.water = water;
+    for(const p of ['p1','p2']){
+      const c = await safeGet('calc:'+p, true); if(c) state.calc[p] = c;
+      const pr = await safeGet('progresso:'+p, true); if(pr) state.progresso[p] = pr;
+      const tr = await safeGet('treinos:'+p, true); if(tr) state.treinos[p] = tr;
+      const tl = await safeGet('treinoLog:'+p, true); if(tl) state.treinoLog[p] = tl;
+    }
+  }
+  // Simulando um tempo de carregamento suave de 1.2 segundos para exibir a animação do corredor
+  setTimeout(() => {
+    state.loaded = true;
+    render();
+  }, 1200);
+}
+
+/* ---------- THEME ---------- */
+function applyTheme(p){
+  const cor = (p && state.perfis[p]) ? state.perfis[p].cor : '#1a365d';
+  document.documentElement.style.setProperty('--accent', cor);
+}
+
+function updateColor(p, cor) {
+  state.perfis[p].cor = cor;
+  safeSet('perfis', state.perfis, true);
+  applyTheme(state.perfilAtivo);
+}
+
+/* ---------- LOGIN SIMPLES (UM CLIQUE, SEM PIN) ---------- */
+function login(p){ 
+  state.session = p; 
+  state.perfilAtivo = p; 
+  state.tab = 'treinos'; 
+  render(); 
+}
+function logout(){ state.session = null; state.menuOpen = false; render(); }
+
+function renderLogin(){
+  return `
+    <div class="loginWrap animated-fade">
+      <h1 class="loginTitle">FICHA DE <span>TREINO</span></h1>
+      <div class="loginSub">Vi & Yas · Escolha seu perfil</div>
+      
+      <div class="lockerBig" style="border-top-color: ${state.perfis.p1.cor}" onclick="login('p1')">
+        <div class="tag">Perfil 01</div>
+        <div class="name" style="color: ${state.perfis.p1.cor}">${state.perfis.p1.nome}</div>
+        <div class="hint">Toque para entrar de forma rápida ⚡</div>
+      </div>
+
+      <div class="lockerBig" style="border-top-color: ${state.perfis.p2.cor}" onclick="login('p2')">
+        <div class="tag">Perfil 02</div>
+        <div class="name" style="color: ${state.perfis.p2.cor}">${state.perfis.p2.nome}</div>
+        <div class="hint">Toque para entrar de forma rápida ⚡</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ---------- CRONÔMETRO ---------- */
+function startTimer(seconds) {
+  if (timerInterval) clearInterval(timerInterval);
+  timerTimeLeft = seconds;
+  timerRunning = true;
+  updateTimerUI();
+  
+  timerInterval = setInterval(() => {
+    if (timerTimeLeft > 0) {
+      timerTimeLeft--;
+      updateTimerUI();
+    } else {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('timerBeep').play();
+      if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      toast("Tempo esgotado! Próxima série! 💪🔥");
+      updateTimerUI();
+    }
+  }, 1000);
+}
+
+function toggleTimerRun() {
+  if (!timerRunning && timerTimeLeft > 0) {
+    timerRunning = true;
+    startTimer(timerTimeLeft);
+  } else {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    updateTimerUI();
+  }
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerTimeLeft = 0;
+  timerRunning = false;
+  updateTimerUI();
+}
+
+function updateTimerUI() {
+  const el = document.getElementById('timerContainer');
+  if(!el) return;
+  if(timerTimeLeft <= 0) {
+    el.style.display = 'none';
+    return;
+  }
+  el.style.display = 'flex';
+  const m = Math.floor(timerTimeLeft / 60);
+  const s = timerTimeLeft % 60;
+  document.getElementById('timerDisplay').textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+  document.getElementById('timerPlayBtn').textContent = timerRunning ? 'PAUSAR' : 'RETOMAR';
+}
+
+/* ---------- ÁGUA ---------- */
+function addWater(amount){
+  const p = state.perfilAtivo;
+  state.water[p] = (state.water[p] || 0) + amount;
+  safeSet('water_daily', state.water, true);
+  render();
+}
+
+function clearWater(){
+  const p = state.perfilAtivo;
+  state.water[p] = 0;
+  safeSet('water_daily', state.water, true);
+  render();
+}
+
+/* ---------- METAS / HABITOS ---------- */
+function toggleMeta(id){
+  const item = state.metas.find(m => m.id === id);
+  if(item) {
+    item.concluida = !item.concluida;
+    safeSet('metas', state.metas, true);
+    render();
+  }
+}
+
+function addMeta(){
+  const input = document.getElementById('new_meta_text');
+  const text = input.value.trim();
+  if(!text) return;
+  state.metas.push({ id: Date.now().toString(36), texto: text, concluida: false });
+  safeSet('metas', state.metas, true);
+  render();
+}
+
+function delMeta(id){
+  state.metas = state.metas.filter(m => m.id !== id);
+  safeSet('metas', state.metas, true);
+  render();
+}
+
+/* ---------- CALCULADORA COM ANIMAÇÃO ---------- */
+function onFormulaChange(){
+  const f = document.getElementById('c_formula').value;
+  document.getElementById('gordura_field').style.display = (f === 'katch') ? 'block' : 'none';
+}
+function calcularTMB(formula, peso, altura, idade, sexo, gordura){
+  if(formula === 'harris'){
+    return sexo === 'M'
+      ? 88.362 + 13.397*peso + 4.799*altura - 5.677*idade
+      : 447.593 + 9.247*peso + 3.098*altura - 4.330*idade;
+  }
+  if(formula === 'katch'){
+    const massaMagra = peso * (1 - (gordura||0)/100);
+    return 370 + 21.6*massaMagra;
+  }
+  return (10*peso) + (6.25*altura) - (5*idade) + (sexo === 'M' ? 5 : -161);
+}
+function calcular(){
+  const peso = parseFloat(document.getElementById('c_peso').value);
+  const altura = parseFloat(document.getElementById('c_altura').value);
+  const idade = parseInt(document.getElementById('c_idade').value);
+  const sexo = document.getElementById('c_sexo').value;
+  const fator = parseFloat(document.getElementById('c_atividade').value);
+  const meta = document.getElementById('c_meta').value;
+  const ajuste = parseInt(document.getElementById('c_ajuste').value) || 0;
+  const formula = document.getElementById('c_formula').value;
+  const gordura = parseFloat(document.getElementById('c_gordura').value) || 0;
+  if(!peso || !altura || !idade){ toast('Preencha peso, altura e idade.'); return; }
+  if(formula === 'katch' && !gordura){ toast('Informe o % de gordura corporal pra usar Katch-McArdle.'); return; }
+  
+  // Ativa a animação de cálculo antes de salvar os dados
+  state.calculando = true;
+  render();
+
+  setTimeout(() => {
+    const tmb = calcularTMB(formula, peso, altura, idade, sexo, gordura);
+    const get = tmb * fator;
+    let alvo = get;
+    if(meta === 'ganhar') alvo = get + ajuste;
+    if(meta === 'perder') alvo = get - ajuste;
+    
+    const result = { peso, altura, idade, sexo, fator, meta, ajuste, formula, gordura,
+      tmb: Math.round(tmb), get: Math.round(get), alvo: Math.round(alvo), data: new Date().toISOString() };
+    
+    state.calc[state.perfilAtivo] = result;
+    safeSet('calc:'+state.perfilAtivo, result, true);
+    state.calculando = false;
+    render();
+  }, 1500); // 1.5 segundos exibindo a animação dos halteres/garrafa
+}
+
+function renderCalc(){
+  const p = state.perfilAtivo;
+  const saved = state.calc[p] || {};
+  const formula = saved.formula || 'mifflin';
+  
+  // Exibição da animação durante o processamento do cálculo
+  if (state.calculando) {
+    return `
+      <div class="calc-loader">
+        <div class="calc-anim-icons">
+          <svg class="anim-weight" viewBox="0 0 24 24"><path d="M4 9v6M2 10.5v3M8 6v12M16 6v12M20 10.5v3M22 9v6M8 12h8"/></svg>
+          <div class="anim-bottle-container"><div class="anim-bottle-fill"></div></div>
+        </div>
+        <div style="font-family:'Oswald', sans-serif; font-size:14px; letter-spacing:0.05em; color:var(--accent-2);">Calculando Macros e Gasto Calórico...</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="panel animated-fade">
+      <div class="field"><label>Fórmula de TMB</label>
+        <select id="c_formula" onchange="onFormulaChange()">
+          <option value="mifflin" ${formula==='mifflin'?'selected':''}>Mifflin-St Jeor (indicada pra maioria)</option>
+          <option value="harris" ${formula==='harris'?'selected':''}>Harris-Benedict (mais antiga)</option>
+          <option value="katch" ${formula==='katch'?'selected':''}>Katch-McArdle (usa % de gordura)</option>
+        </select>
+      </div>
+      <div class="rowGrid">
+        <div class="field"><label>Peso (kg)</label><input type="number" id="c_peso" step="0.1" value="${saved.peso ?? ''}"></div>
+        <div class="field"><label>Altura (cm)</label><input type="number" id="c_altura" value="${saved.altura ?? ''}"></div>
+      </div>
+      <div class="rowGrid">
+        <div class="field"><label>Idade</label><input type="number" id="c_idade" value="${saved.idade ?? ''}"></div>
+        <div class="field"><label>Sexo (fórmula)</label>
+          <select id="c_sexo">
+            <option value="F" ${saved.sexo==='F'?'selected':''}>Feminino</option>
+            <option value="M" ${saved.sexo==='M'?'selected':(saved.sexo?'':( p==='p1'?'selected':''))}>Masculino</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" id="gordura_field" style="display:${formula==='katch'?'block':'none'};">
+        <label>% de gordura corporal</label>
+        <input type="number" id="c_gordura" step="0.1" value="${saved.gordura || ''}" placeholder="ex: 15">
+      </div>
+      <div class="field"><label>Nível de atividade</label>
+        <select id="c_atividade">
+          <option value="1.2" ${saved.fator==1.2?'selected':''}>Sedentário</option>
+          <option value="1.375" ${saved.fator==1.375?'selected':''}>Leve (1–3x/semana)</option>
+          <option value="1.55" ${saved.fator==1.55?'selected':''}>Moderado (3–5x/semana)</option>
+          <option value="1.725" ${saved.fator==1.725?'selected':''}>Intenso (6–7x/semana)</option>
+        </select>
+      </div>
+      <div class="rowGrid">
+        <div class="field"><label>Objetivo</label>
+          <select id="c_meta">
+            <option value="manter" ${saved.meta==='manter'?'selected':''}>Manter peso</option>
+            <option value="ganhar" ${saved.meta==='ganhar'?'selected':''}>Ganhar peso</option>
+            <option value="perder" ${saved.meta==='perder'?'selected':''}>Perder peso</option>
+          </select>
+        </div>
+        <div class="field"><label>Ajuste (kcal)</label><input type="number" id="c_ajuste" value="${saved.ajuste ?? 400}"></div>
+      </div>
+      <button class="btn" onclick="calcular()">Calcular</button>
+      ${saved.tmb ? `
+      <div class="plates">
+        <div class="plate"><div class="val">${saved.tmb}</div><div class="lbl">TMB kcal</div></div>
+        <div class="plate accent2"><div class="val">${saved.get}</div><div class="lbl">Manutenção kcal</div></div>
+        <div class="plate accent"><div class="val">${saved.alvo}</div><div class="lbl">Meta (${saved.meta}) kcal</div></div>
+      </div>` : ''}
+    </div>
+  `;
+}
+
+/* ---------- PROGRESSO ---------- */
+function addProgresso(){
+  const data = document.getElementById('pr_data').value || new Date().toISOString().slice(0,10);
+  const peso = parseFloat(document.getElementById('pr_peso').value);
+  if(!peso){ toast('Informe o peso.'); return; }
+  const entry = { id: Date.now().toString(36), data, peso,
+    cintura: document.getElementById('pr_cintura').value || null,
+    peito: document.getElementById('pr_peito').value || null,
+    quadril: document.getElementById('pr_quadril').value || null,
+    braco: document.getElementById('pr_braco').value || null };
+  const list = state.progresso[state.perfilAtivo];
+  list.push(entry);
+  list.sort((a,b)=> a.data.localeCompare(b.data));
+  safeSet('progresso:'+state.perfilAtivo, list, true);
+  render();
+}
+function delProgresso(id){
+  const p = state.perfilAtivo;
+  state.progresso[p] = state.progresso[p].filter(e=>e.id!==id);
+  safeSet('progresso:'+p, state.progresso[p], true);
+  render();
+}
+function svgChart(list){
+  if(list.length < 2) return `<div class="empty">Adicione ao menos 2 registros para ver o gráfico.</div>`;
+  const w = 640, h = 160, pad = 30;
+  const pesos = list.map(e=>e.peso);
+  const min = Math.min(...pesos) - 1, max = Math.max(...pesos) + 1;
+  const xStep = (w - pad*2) / (list.length - 1);
+  const pts = list.map((e,i)=>{
+    const x = pad + i*xStep;
+    const y = h - pad - ((e.peso - min)/(max-min)) * (h - pad*2);
+    return [x,y];
+  });
+  const path = pts.map((pt,i)=> (i===0?'M':'L') + pt[0].toFixed(1) + ',' + pt[1].toFixed(1)).join(' ');
+  const dots = pts.map((pt,i)=> `<circle cx="${pt[0]}" cy="${pt[1]}" r="3.5" fill="var(--accent)"><title>${list[i].data}: ${list[i].peso}kg</title></circle>`).join('');
+  return `<div class="chartWrap"><svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="var(--line)"/>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>${dots}</svg></div>`;
+}
+function renderProgresso(){
+  const p = state.perfilAtivo;
+  const list = state.progresso[p];
+  const rows = [...list].reverse().map(e => `
+    <div class="ledgerRow">
+      <div><strong>${e.peso} kg</strong>
+        <div class="meta">${e.data}${e.cintura?` · cintura ${e.cintura}cm`:''}${e.peito?` · peito ${e.peito}cm`:''}${e.quadril?` · quadril ${e.quadril}cm`:''}${e.braco?` · braço ${e.braco}cm`:''}</div>
+      </div>
+      <button class="iconBtn" onclick="delProgresso('${e.id}')">✕</button>
+    </div>`).join('') || `<div class="empty">Nenhum registro ainda.</div>`;
+  return `
+    <div class="panel animated-fade"><h3 style="margin-bottom:14px;">Evolução do peso</h3>${svgChart(list)}</div>
+    <div class="panel animated-fade">
+      <div class="rowGrid">
+        <div class="field"><label>Data</label><input type="date" id="pr_data" value="${new Date().toISOString().slice(0,10)}"></div>
+        <div class="field"><label>Peso (kg)</label><input type="number" step="0.1" id="pr_peso" placeholder="ex: 75.2"></div>
+      </div>
+      <div class="rowGrid">
+        <div class="field"><label>Cintura (cm)</label><input type="number" step="0.1" id="pr_cintura"></div>
+        <div class="field"><label>Peito (cm)</label><input type="number" step="0.1" id="pr_peito"></div>
+      </div>
+      <div class="rowGrid">
+        <div class="field"><label>Quadril (cm)</label><input type="number" step="0.1" id="pr_quadril"></div>
+        <div class="field"><label>Braço (cm)</label><input type="number" step="0.1" id="pr_braco"></div>
+      </div>
+      <button class="btn" onclick="addProgresso()">Adicionar registro</button>
+    </div>
+    <div class="panel animated-fade"><h3 style="margin-bottom:6px;">Histórico</h3><div class="ledger">${rows}</div></div>
+  `;
+}
+
+/* ---------- TREINOS ---------- */
+function getWeekDates(){
+  const now = new Date();
+  const dow = (now.getDay()+6)%7;
+  const monday = new Date(now); monday.setDate(now.getDate()-dow);
+  const out = [];
+  for(let i=0;i<7;i++){ const d=new Date(monday); d.setDate(monday.getDate()+i); out.push(d.toISOString().slice(0,10)); }
+  return out;
+}
+function toggleDia(dateStr){
+  const p = state.perfilAtivo;
+  const log = state.treinoLog[p];
+  const idx = log.indexOf(dateStr);
+  if(idx>-1) log.splice(idx,1); else log.push(dateStr);
+  safeSet('treinoLog:'+p, log, true);
+  render();
+}
+function addDia(){
+  const nome = document.getElementById('tr_nome').value.trim();
+  if(!nome){ toast('Dê um nome ao treino (ex: Treino A - Peito).'); return; }
+  const p = state.perfilAtivo;
+  state.treinos[p].push({ id: Date.now().toString(36), nome, exercicios: [] });
+  document.getElementById('tr_nome').value = '';
+  safeSet('treinos:'+p, state.treinos[p], true);
+  render();
+}
+function delDia(id){
+  const p = state.perfilAtivo;
+  state.treinos[p] = state.treinos[p].filter(d=>d.id!==id);
+  safeSet('treinos:'+p, state.treinos[p], true);
+  render();
+}
+function addExercicio(diaId){
+  const nome = document.getElementById('ex_nome_'+diaId).value.trim();
+  const series = document.getElementById('ex_series_'+diaId).value;
+  const reps = document.getElementById('ex_reps_'+diaId).value;
+  const carga = document.getElementById('ex_carga_'+diaId).value;
+  if(!nome){ toast('Informe o nome do exercício.'); return; }
+  const p = state.perfilAtivo;
+  const dia = state.treinos[p].find(d=>d.id===diaId);
+  dia.exercicios.push({ id: Date.now().toString(36), nome, series, reps, carga, feito:false });
+  safeSet('treinos:'+p, state.treinos[p], true);
+  render();
+}
+function delExercicio(diaId, exId){
+  const p = state.perfilAtivo;
+  const dia = state.treinos[p].find(d=>d.id===diaId);
+  dia.exercicios = dia.exercicios.filter(e=>e.id!==exId);
+  safeSet('treinos:'+p, state.treinos[p], true);
+  render();
+}
+function toggleExercicioFeito(diaId, exId){
+  const p = state.perfilAtivo;
+  const dia = state.treinos[p].find(d=>d.id===diaId);
+  const ex = dia.exercicios.find(e=>e.id===exId);
+  ex.feito = !ex.feito;
+  
+  if(ex.feito) {
+    startTimer(60);
+    toast('Exercício feito! Descanso iniciado ⏱️');
+  }
+  
+  safeSet('treinos:'+p, state.treinos[p], true);
+  render();
+}
+function renderWeekStrip(){
+  const p = state.perfilAtivo;
+  const dates = getWeekDates();
+  const today = new Date().toISOString().slice(0,10);
+  return `<div class="weekStrip">${dates.map((d,i)=>{
+    const done = state.treinoLog[p].includes(d);
+    const isToday = d===today;
+    return `<div class="dayDot ${done?'done':''} ${isToday?'today':''}" onclick="toggleDia('${d}')">
+      <div class="lbl">${DIAS_SEMANA[i]}</div>
+      <div class="circ">${new Date(d+'T00:00:00').getDate()}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderTreinos(){
+  const p = state.perfilAtivo;
+  const dias = state.treinos[p];
+  
+  const pesoAtual = state.calc[p]?.peso || (p === 'p1' ? 75 : 55);
+  const metaAguaMl = Math.round(pesoAtual * 35);
+  const aguaConsumida = state.water[p] || 0;
+  const pctAgua = Math.min(100, Math.round((aguaConsumida / metaAguaMl) * 100));
+
+  const diasHtml = dias.map(d => `
+    <div class="dayCard animated-fade">
+      <div class="dayHead"><h3>${d.nome}</h3><button class="iconBtn" onclick="delDia('${d.id}')">✕</button></div>
+      <div class="dayBody">
+        <div class="exRow"><div></div><div class="h">Exercício</div><div class="h">Séries</div><div class="h">Reps</div><div class="h">Carga</div><div></div></div>
+        ${d.exercicios.map(e=>`
+          <div class="exRow ${e.feito?'done':''}">
+            <input type="checkbox" ${e.feito?'checked':''} onchange="toggleExercicioFeito('${d.id}','${e.id}')">
+            <div class="exName">${e.nome}</div><div>${e.series||'—'}</div><div>${e.reps||'—'}</div><div>${e.carga?e.carga+'kg':'—'}</div>
+            <button class="iconBtn" onclick="delExercicio('${d.id}','${e.id}')">✕</button>
+          </div>`).join('') || '<div class="empty">Sem exercícios ainda.</div>'}
+        <hr class="tear">
+        <div class="rowGrid">
+          <div class="field"><label>Exercício</label><input id="ex_nome_${d.id}" placeholder="ex: Supino reto"></div>
+          <div class="field"><label>Séries</label><input id="ex_series_${d.id}" placeholder="ex: 4"></div>
+        </div>
+        <div class="rowGrid">
+          <div class="field"><label>Reps</label><input id="ex_reps_${d.id}" placeholder="ex: 10-12"></div>
+          <div class="field"><label>Carga (kg)</label><input id="ex_carga_${d.id}" placeholder="ex: 20"></div>
+        </div>
+        <button class="btn small" onclick="addExercicio('${d.id}')">Adicionar Exercício</button>
+      </div>
+    </div>
+  `).join('') || '<div class="empty">Nenhum treino criado ainda.</div>';
+
+  const totalMetas = state.metas.length;
+  const concluidas = state.metas.filter(m=>m.concluida).length;
+  const pctMetas = totalMetas > 0 ? Math.round((concluidas / totalMetas) * 100) : 0;
+
+  return `
+    <!-- WIDGET DE HIDRATAÇÃO -->
+    <div class="panel animated-fade">
+      <h3 style="font-size:13px; margin-bottom:10px;">💧 Hidratação Diária</h3>
+      <div class="waterWidget">
+        <div style="flex:1;">
+          <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Progresso: ${aguaConsumida}ml / ${metaAguaMl}ml (${pctAgua}%)</div>
+          <div class="waterProgress"><div class="waterBar" style="width: ${pctAgua}%;"></div></div>
+        </div>
+        <div class="btnRow" style="margin-top:0;">
+          <button class="btn small" onclick="addWater(250)">+250ml</button>
+          <button class="btn small" onclick="addWater(500)">+500ml</button>
+          <button class="btn small ghost" onclick="clearWater()">Resetar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- METAS DO CASAL -->
+    <div class="panel animated-fade">
+      <h3 style="font-size:13px; margin-bottom:6px;">🎯 Metas Vi & Yas</h3>
+      <div style="font-size:11px; color:var(--muted);">${concluidas} de ${totalMetas} conquistadas (${pctMetas}%)</div>
+      <div class="progressBar"><div class="progressBarInner" style="width: ${pctMetas}%;"></div></div>
+      <div>
+        ${state.metas.map(m => `
+          <div class="metaRow ${m.concluida?'done':''}">
+            <input type="checkbox" ${m.concluida?'checked':''} onchange="toggleMeta('${m.id}')">
+            <span style="flex:1; font-size:12.5px;">${m.texto}</span>
+            <button class="iconBtn" onclick="delMeta('${m.id}')">✕</button>
+          </div>
+        `).join('')}
+      </div>
+      <div class="commentInputWrap" style="margin-top:12px;">
+        <input id="new_meta_text" placeholder="Adicionar nova meta para o casal...">
+        <button class="btn small" onclick="addMeta()">+ Meta</button>
+      </div>
+    </div>
+
+    ${renderWeekStrip()}
+    
+    <div class="panel animated-fade">
+      <h3 style="margin-bottom:12px;">Criar novo treino</h3>
+      <div class="field">
+        <label>Nome do Treino</label>
+        <input id="tr_nome" placeholder="ex: Treino A - Peito e Tríceps">
+      </div>
+      <button class="btn" onclick="addDia()">Criar Treino</button>
+    </div>
+    
+    ${diasHtml}
+  `;
+}
+
+/* ---------- MURAL ---------- */
+let tempImageBase64 = null;
+
+function processImage(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 500;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      tempImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+      
+      const preview = document.getElementById('mu_preview');
+      preview.src = tempImageBase64;
+      preview.style.display = 'block';
+      document.getElementById('mu_fname').textContent = file.name;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function addPost(){
+  const text = document.getElementById('mu_text').value.trim();
+  if(!text && !tempImageBase64){ toast('Escreva alguma coisa ou adicione uma foto.'); return; }
+  
+  const post = {
+    id: Date.now().toString(36),
+    autor: state.perfis[state.perfilAtivo].nome,
+    perfil: state.perfilAtivo,
+    texto: text,
+    img: tempImageBase64,
+    data: new Date().toISOString(),
+    likes: [],
+    comentarios: []
+  };
+
+  state.mural.unshift(post);
+  safeSet('mural', state.mural, true);
+  
+  tempImageBase64 = null;
+  render();
+}
+
+function toggleLike(postId){
+  const post = state.mural.find(p => p.id === postId);
+  if(!post) return;
+  const perfil = state.perfilAtivo;
+  const idx = post.likes.indexOf(perfil);
+  if(idx > -1) post.likes.splice(idx, 1); else post.likes.push(perfil);
+  safeSet('mural', state.mural, true);
+  render();
+}
+
+function addComment(postId){
+  const input = document.getElementById('comm_input_'+postId);
+  const text = input.value.trim();
+  if(!text) return;
+  const post = state.mural.find(p => p.id === postId);
+  if(!post) return;
+  
+  post.comentarios.push({
+    id: Date.now().toString(36),
+    autor: state.perfis[state.perfilAtivo].nome,
+    texto: text
+  });
+
+  safeSet('mural', state.mural, true);
+  render();
+}
+
+function delPost(postId){
+  const post = state.mural.find(p => p.id === postId);
+  if(!post) return;
+  if(post.perfil !== state.perfilAtivo){
+    toast('Você só pode apagar suas próprias postagens.');
+    return;
+  }
+  state.mural = state.mural.filter(p => p.id !== postId);
+  safeSet('mural', state.mural, true);
+  render();
+}
+
+function renderMural(){
+  const p = state.perfilAtivo;
+  const postsHtml = state.mural.map(post => {
+    const liked = post.likes.includes(p);
+    const dono = post.perfil === p;
+    const dataFormatada = new Date(post.data).toLocaleDateString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+    const corAutor = state.perfis[post.perfil] ? state.perfis[post.perfil].cor : 'var(--accent)';
+    const comentariosArr = post.comentarios || [];
+    
+    return `
+      <div class="postCard animated-fade">
+        <div class="postHead">
+          <div class="avatar avatarSmall" style="background:${corAutor}">${post.autor[0]}</div>
+          <div style="flex:1;">
+            <div class="who" style="color:${corAutor}">${post.autor}</div>
+            <div class="when">${dataFormatada}</div>
+          </div>
+          ${dono ? `<button class="iconBtn" onclick="delPost('${post.id}')">✕</button>` : ''}
+        </div>
+        ${post.img ? `<img class="postImg" src="${post.img}">` : ''}
+        ${post.texto ? `<div class="postText">${post.texto}</div>` : ''}
+        <div class="postFoot">
+          <button class="likeBtn ${liked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
+            🔥 ${post.likes.length}
+          </button>
+        </div>
+
+        <!-- Comentários -->
+        <div class="commentsSec">
+          <div class="commentList" id="comm_list_${post.id}">
+            ${comentariosArr.map(c => `
+              <div class="commentRow">
+                <strong>${c.autor}:</strong> <span>${c.texto}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="commentInputWrap">
+            <input id="comm_input_${post.id}" placeholder="Deixe um comentário fofo..." onkeydown="if(event.key==='Enter') addComment('${post.id}')">
+            <button class="btn small" onclick="addComment('${post.id}')">Enviar</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('') || '<div class="empty">Nenhuma foto ou postagem aqui ainda. Publique algo para motivar o seu amor! 🔥</div>';
+
+  return `
+    <div class="panel composer animated-fade">
+      <h3 style="margin-bottom:12px;">Mural de Fotos e Posts</h3>
+      <div class="field">
+        <textarea id="mu_text" placeholder="Como foi o treino hoje?"></textarea>
+      </div>
+      
+      <img id="mu_preview" class="previewImg">
+      
+      <div class="fileRow">
+        <label class="btn ghost small" style="cursor:pointer; display:inline-block; width:auto; text-align:center;">
+          📸 Adicionar Foto
+          <input type="file" accept="image/*" onchange="processImage(this)" style="display:none;">
+        </label>
+        <div class="fname" id="mu_fname">Nenhuma imagem selecionada</div>
+      </div>
+
+      <button class="btn" onclick="addPost()">Postar no Mural</button>
+    </div>
+    ${postsHtml}
+  `;
+}
+
+/* ---------- RENDERIZAÇÃO GERAL ---------- */
+function toggleMenu(){
+  state.menuOpen = !state.menuOpen;
+  render();
+}
+
+function changeTab(tab){
+  state.tab = tab;
+  render();
+}
+
+function switchPerfil(){
+  const outro = state.session === 'p1' ? 'p2' : 'p1';
+  state.session = outro;
+  state.perfilAtivo = outro;
+  state.menuOpen = false;
+  applyTheme(outro);
+  render();
+  toast(`Entrou no perfil do(a) ${state.perfis[outro].nome}`);
+}
+
+function renderApp(){
+  applyTheme(state.perfilAtivo);
+  const p = state.perfilAtivo;
+  const perfilObj = state.perfis[p];
+  
+  let content = '';
+  if(state.tab === 'treinos') content = renderTreinos();
+  if(state.tab === 'progresso') content = renderProgresso();
+  if(state.tab === 'calc') content = renderCalc();
+  if(state.tab === 'mural') content = renderMural();
+
+  return `
+    <div class="wrap">
+      <header class="topbar">
+        <div class="left">
+          <div class="avatar" style="background:${perfilObj.cor}" onclick="toggleMenu()">${perfilObj.nome[0]}</div>
+          <div class="wordmark">Vi & Yas <span>FIT</span></div>
+        </div>
+        <button class="menuBtn" onclick="toggleMenu()">Menu</button>
+      </header>
+
+      <main>${content}</main>
+
+      <!-- CRONÔMETRO FLUTUANTE -->
+      <div class="timerBar" id="timerContainer" style="display:none;">
+        <div>⏱️ Tempo de Descanso: <span class="time" id="timerDisplay">00:00</span></div>
+        <div class="timerBtnRow">
+          <button class="btn small" id="timerPlayBtn" onclick="toggleTimerRun()">PAUSAR</button>
+          <button class="btn small ghost" onclick="stopTimer()">✕</button>
+        </div>
+      </div>
+
+      <nav class="bottomNav">
+        <div class="bottomNavInner">
+          <button class="navBtn ${state.tab==='treinos'?'active':''}" onclick="changeTab('treinos')">
+            ${ICONS.treinos}
+            <div>Treinos</div>
+          </button>
+          <button class="navBtn ${state.tab==='progresso'?'active':''}" onclick="changeTab('progresso')">
+            ${ICONS.progresso}
+            <div>Evolução</div>
+          </button>
+          <button class="navBtn ${state.tab==='calc'?'active':''}" onclick="changeTab('calc')">
+            ${ICONS.calc}
+            <div>Macros</div>
+          </button>
+          <button class="navBtn ${state.tab==='mural'?'active':''}" onclick="changeTab('mural')">
+            ${ICONS.mural}
+            <div>Mural</div>
+          </button>
+        </div>
+      </nav>
+
+      <!-- MENU LATERAL -->
+      <div class="menuOverlay ${state.menuOpen?'open':''}" onclick="toggleMenu()"></div>
+      <div class="menuPanel ${state.menuOpen?'open':''}">
+        <h3>Opções</h3>
+        
+        <div class="field" style="margin-top: 10px;">
+          <label>Minha Cor Temática</label>
+          <div class="color-picker-wrap">
+            <input type="color" value="${perfilObj.cor}" onchange="updateColor('${p}', this.value)">
+            <span style="font-size:12px;">Escolher cor</span>
+          </div>
+        </div>
+
+        <div class="menuItem" onclick="switchPerfil()">Alternar Perfil (${p==='p1'?state.perfis.p2.nome:state.perfis.p1.nome})</div>
+        
+        <div class="tear"></div>
+        <h3 style="font-size:12px; margin-bottom:8px;">⏱️ Ativar Cronômetro</h3>
+        <div class="btnRow" style="margin-bottom:15px;">
+          <button class="btn small" onclick="startTimer(30)">30s</button>
+          <button class="btn small" onclick="startTimer(60)">1m</button>
+          <button class="btn small" onclick="startTimer(120)">2m</button>
+        </div>
+
+        <div class="menuItem danger" onclick="logout()">Sair</div>
+      </div>
+    </div>
+  `;
+}
+
+function render(){
+  const root = document.getElementById('app');
+  if(!state.loaded){
+    root.innerHTML = `
+      <div class="loader-screen">
+        <svg class="runner-icon" viewBox="0 0 24 24">
+          <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l.89-4.25-1.99-1c-.5-.25-.7-.85-.45-1.35l1-2c.4-.8 1.25-1.28 2.15-1.28H15c.55 0 1 .45 1 1v2.5h2c.55 0 1 .45 1 1s-.45 1-1 1h-2.5c-.55 0-1-.45-1-1v-2h-.6l-1.4 7H9.89zm1.42 2.22l.5-2.5h3.6l1.2 6H15.1l-1.5-4.5-2.29-1.28z"/>
+        </svg>
+        <div style="font-family:'Oswald', sans-serif; font-size:16px; letter-spacing:0.1em; text-transform:uppercase;">Preparando seu Treino...</div>
+      </div>
+    `;
+    return;
+  }
+  if(!state.session){
+    applyTheme(null);
+    root.innerHTML = renderLogin();
+  } else {
+    root.innerHTML = renderApp();
+    updateTimerUI();
+  }
+}
+
+loadAll();
+</script>
+</body>
+</html> 	
