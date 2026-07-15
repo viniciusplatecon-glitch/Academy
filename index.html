@@ -296,9 +296,41 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<audio id="timerBeep" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-500.wav" preload="auto"></audio>
-
 <script>
+// --- SISTEMA DE SOM UI (Estilo Minimalista/Apple) ---
+const sysSounds = {
+  tap: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
+  success: new Audio('https://assets.mixkit.co/active_storage/sfx/1114/1114-preview.mp3'),
+  timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-500.wav')
+};
+
+function playHaptic(type) {
+  if (sysSounds[type]) {
+    const soundClone = sysSounds[type].cloneNode();
+    soundClone.volume = type === 'timer' ? 0.5 : 0.25; 
+    soundClone.play().catch(e => console.log("Áudio bloqueado pelo navegador até o primeiro clique."));
+  }
+}
+
+// --- SISTEMA DE NOTIFICAÇÕES DO NAVEGADOR ---
+function solicitarPermissaoNotificacao() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+    Notification.requestPermission();
+  }
+}
+
+function enviarNotificacao(titulo, mensagem) {
+  if ("Notification" in window && Notification.permission === "granted") {
+    const notificacao = new Notification(titulo, { 
+      body: mensagem,
+      icon: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png'
+    });
+    setTimeout(() => notificacao.close(), 4000);
+  }
+}
+
+// --- DADOS ORIGINAIS ---
 const STORAGE_OK = !!(window.storage || window.localStorage);
 const ICONS = {
   treinos: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 9v6M2 10.5v3M8 6v12M16 6v12M20 10.5v3M22 9v6M8 12h8"/></svg>',
@@ -510,6 +542,7 @@ function updateColor(p, cor) {
 }
 
 function login(p){ 
+  solicitarPermissaoNotificacao(); // Solicita permissão de notificação no login
   state.session = p; 
   state.perfilAtivo = p; 
   state.tab = 'treinos'; 
@@ -551,7 +584,10 @@ function startTimer(seconds) {
     } else {
       clearInterval(timerInterval);
       timerRunning = false;
-      document.getElementById('timerBeep').play();
+      
+      playHaptic('timer'); // Novo áudio gerenciado via JS
+      enviarNotificacao("Kopple", "Tempo de descanso finalizado. Próxima série!");
+      
       if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
       toast("Descanso finalizado. Próxima série.");
       updateTimerUI();
@@ -589,10 +625,14 @@ function updateTimerUI() {
 }
 
 function addWater(amount){
+  playHaptic('tap'); // Efeito sonoro de toque
   const p = state.perfilAtivo;
   state.water[p] = (state.water[p] || 0) + amount;
   safeSet('water_daily', state.water, true);
-  if (state.water[p] >= state.waterMeta[p]) toast("Meta de hidratação alcançada.");
+  if (state.water[p] >= state.waterMeta[p]) {
+    playHaptic('success'); // Som de conquista ao bater a meta
+    toast("Meta de hidratação alcançada.");
+  }
   render();
 }
 
@@ -702,7 +742,13 @@ function calcNutrition() {
   }, 1000);
 }
 
-function changeTab(tabName) { state.tab = tabName; state.menuOpen = false; window.scrollTo(0,0); render(); }
+function changeTab(tabName) { 
+  playHaptic('tap'); // Efeito sonoro de transição 
+  state.tab = tabName; 
+  state.menuOpen = false; 
+  window.scrollTo(0,0); 
+  render(); 
+}
 function selectDayDot(index) { state.diaSelecionadoManual = index === 0 ? 7 : index; render(); }
 
 function checkExercicio(treinoId, exId, checked) {
@@ -710,7 +756,12 @@ function checkExercicio(treinoId, exId, checked) {
   const treino = state.treinos[p].find(t => t.id === treinoId);
   if(treino) {
     const ex = treino.exercicios.find(e => e.id === exId);
-    if(ex) { ex.feito = checked; safeSet('treinos:'+p, state.treinos[p], true); render(); }
+    if(ex) { 
+      ex.feito = checked; 
+      if (checked) playHaptic('success'); else playHaptic('tap');
+      safeSet('treinos:'+p, state.treinos[p], true); 
+      render(); 
+    }
   }
 }
 
@@ -737,7 +788,12 @@ function getTreinoDoDia() {
 
 function toggleMeta(id, checked) {
   const meta = state.metas.find(m => m.id === id);
-  if(meta) { meta.concluida = checked; safeSet('metas', state.metas, true); render(); }
+  if(meta) { 
+    meta.concluida = checked; 
+    if (checked) playHaptic('success'); else playHaptic('tap');
+    safeSet('metas', state.metas, true); 
+    render(); 
+  }
 }
 
 function renderContent() {
