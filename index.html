@@ -16,7 +16,7 @@
     --muted:#7C8386;
     --accent:#1a365d; 
     --accent-ink:#ECE8DE;
-    --accent-2:#8FBF3F;
+    --accent-2: var(--accent);
     --line: rgba(236,232,222,0.10);
   }
   *{box-sizing:border-box;}
@@ -156,6 +156,7 @@
     background:var(--accent); color:var(--accent-ink); border:none; padding:11px 16px; font-family:'Oswald',sans-serif;
     text-transform:uppercase; font-weight:600; letter-spacing:0.05em; cursor:pointer; font-size:13px;
     display: inline-block; text-align: center; text-decoration: none;
+    border-radius: 4px;
   }
   .btn:hover{filter:brightness(1.2);}
   .btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line);}
@@ -169,7 +170,7 @@
   .iconBtn{background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; padding:2px 6px;}
   .iconBtn:hover{color:var(--accent);}
   .hint{font-size:11px; color:var(--muted); margin-top:8px; line-height:1.5;}
-  .toast{position:fixed; bottom:88px; left:50%; transform:translateX(-50%); background:var(--panel-2); border:1px solid var(--accent); color:var(--ink); padding:9px 16px; font-size:12px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:99;}
+  .toast{position:fixed; bottom:88px; left:50%; transform:translateX(-50%); background:var(--panel-2); border:1px solid var(--accent); color:var(--ink); padding:9px 16px; font-size:12px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:99; border-radius: 4px;}
   .toast.show{opacity:1;}
 
   /* ---------- TOP HEADER ---------- */
@@ -180,10 +181,9 @@
     font-family:'Oswald',sans-serif; font-weight:700; font-size:15px; cursor:pointer; border:none; flex-shrink:0;
     color: #fff !important;
   }
-  .avatarSmall{width:30px; height:30px; font-size:12px;}
   .wordmark{font-size:20px; font-family:'Oswald', sans-serif; font-weight:700; letter-spacing:0.06em;}
   .wordmark span{color:var(--accent-2);}
-  .menuBtn{background:none; border:1px solid var(--line); color:var(--muted); font-size:11px; padding:6px 10px; cursor:pointer; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.05em;}
+  .menuBtn{background:none; border:1px solid var(--line); color:var(--muted); font-size:11px; padding:6px 10px; cursor:pointer; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.05em; border-radius: 4px;}
   .menuBtn:hover{color:var(--accent); border-color:var(--accent);}
   .menuPanel{position:fixed; top:0; right:0; bottom:0; width:280px; background:var(--panel); border-left:1px solid var(--line); z-index:70; padding:20px; transform:translateX(100%); transition:transform .2s;}
   .menuPanel.open{transform:translateX(0);}
@@ -267,8 +267,6 @@
   .dayDot.done .circ{background:var(--accent-2); border-color:var(--accent-2); color:#14181A;}
   .dayDot.today .circ{border-color:var(--accent-2);}
 
-  .chartWrap{width:100%; overflow-x:auto;}
-
   /* ---------- CRONÔMETRO FLUTUANTE ---------- */
   .timerBar{
     position:fixed; bottom:64px; left:0; right:0; background:var(--panel-2); border-top:1px solid var(--accent);
@@ -290,28 +288,12 @@
   .progressBar { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin: 10px 0; }
   .progressBarInner { height: 100%; background: var(--accent-2); width: 0%; transition: width 0.3s; }
 
-  /* ---------- MURAL DE POSTS ---------- */
-  .postCard{background:var(--panel); border:1px solid var(--line); margin-bottom:14px; border-radius: 4px; overflow: hidden;}
-  .postHead{display:flex; align-items:center; gap:10px; padding:12px 14px 8px;}
-  .postHead .who{font-family:'Oswald',sans-serif; font-size:13px; text-transform:uppercase;}
-  .postHead .when{font-size:10px; color:var(--muted);}
-  .postText{padding:0 14px 10px; font-size:13.5px; line-height:1.5; white-space:pre-wrap;}
-  .postImg{width:100%; display:block; max-height:420px; object-fit:cover; border-bottom: 1px solid var(--line);}
-  .postFoot{display:flex; align-items:center; gap:10px; padding:8px 14px 12px; border-top: 1px solid var(--line); flex-wrap: wrap;}
-  .likeBtn{background:none; border:1px solid var(--line); color:var(--muted); padding:6px 12px; font-size:12px; cursor:pointer; font-family:'JetBrains Mono',monospace;}
-  .likeBtn.liked{border-color:var(--accent); color:var(--accent);}
-  .composer textarea{margin-bottom:10px;}
-  .fileRow{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
-  .fileRow .fname{font-size:11px; color:var(--muted);}
-  .previewImg{max-width:100%; max-height:160px; margin-bottom:10px; border:1px solid var(--line); display:none;}
+  /* ---------- NOVO: GRÁFICO CSS ---------- */
+  .chart { display: flex; align-items: flex-end; justify-content: space-between; height: 120px; gap: 6px; margin: 16px 0; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+  .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .chart-bar { width: 100%; background: var(--accent-2); border-radius: 2px 2px 0 0; transition: height 0.3s ease; min-height: 4px; max-width: 24px; }
+  .chart-val { font-size: 9px; margin-bottom: 4px; color: var(--ink); }
   
-  /* Comentários */
-  .commentsSec { width: 100%; background: var(--panel-2); padding: 10px 14px; font-size: 12px; border-top: 1px solid var(--line); }
-  .commentInputWrap { display: flex; gap: 8px; margin-top: 8px; }
-  .commentInputWrap input { padding: 6px 10px; font-size: 12px; }
-  .commentRow { margin-bottom: 6px; line-height: 1.4; }
-  .commentRow strong { color: var(--accent); }
-
   @media (max-width:480px){
     .rowGrid{grid-template-columns:1fr;}
     .exRow{grid-template-columns:auto 1.6fr 1fr 1fr 1fr auto;}
@@ -341,7 +323,6 @@ const ICONS = {
 };
 const DIAS_SEMANA = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
 
-// Surpresas Diárias atualizadas de acordo com o dia do ano
 const SURPRESAS = [
   "Desafio de hoje: faça 1 minuto de prancha extra no final do treino! ⏱️",
   "O casal que treina junto cresce junto! Que tal uma foto pós-treino hoje? 📸",
@@ -352,28 +333,27 @@ const SURPRESAS = [
   "Desafio Kopple: 20 polichinelos agora para ativar a endorfina! ⚡"
 ];
 
-// Mapeamento de dias da semana para IDs dos treinos padrão
+// ALTERAÇÃO: Dia 0 (Domingo) mapeado para "descanso"
 const MAPA_DIAS_TREINO_VINI = {
-  1: "vini_seg", // Segunda
-  2: "vini_ter", // Terça
-  3: "vini_qua", // Quarta
-  4: "vini_qui", // Quinta
-  5: "vini_sex", // Sexta
-  6: "vini_ter", // Sábado (repete perna/posterior)
-  0: "vini_seg"  // Domingo
+  1: "vini_seg", 
+  2: "vini_ter", 
+  3: "vini_qua", 
+  4: "vini_qui", 
+  5: "vini_sex", 
+  6: "vini_ter", 
+  0: "descanso"  
 };
 
 const MAPA_DIAS_TREINO_YAS = {
-  1: "yas_ta", // Segunda - Treino A
-  2: "yas_tb", // Terça - Treino B
-  3: "yas_tc", // Quarta - Treino C
-  4: "yas_ta", // Quinta - Treino A
-  5: "yas_tb", // Sexta - Treino B
-  6: "yas_tc", // Sábado - Treino C
-  0: "yas_ta"  // Domingo
+  1: "yas_ta", 
+  2: "yas_tb", 
+  3: "yas_tc", 
+  4: "yas_ta", 
+  5: "yas_tb", 
+  6: "yas_tc", 
+  0: "descanso"  
 };
 
-// SEU NOVO TREINO CONFIGURADO DIRETAMENTE DA PLANILHA EXCEL
 const defaultTreinosVini = [
   {
     id: "vini_seg", nome: "Segunda-Feira (Peito / Ombro / Bíceps)",
@@ -487,11 +467,8 @@ let state = {
   perfilAtivo: 'p1',
   tab: 'treinos',
   calc: { p1:null, p2:null },
-  
-  // Categorias de Evolução
   evolucaoRapida: { p1:[], p2:[] }, 
   evolucaoDetalhada: { p1:[], p2:[] }, 
-
   treinos: { p1:defaultTreinosVini, p2:defaultTreinosYas },
   treinoLog: { p1:[], p2:[] },
   mural: [],
@@ -502,31 +479,22 @@ let state = {
     { id: "m4", texto: "Subir 1 foto motivacional por semana no mural", concluida: false }
   ],
   water: { p1: 0, p2: 0 },
-  waterMeta: { p1: 2000, p2: 2000 }, // Em ml
+  waterMeta: { p1: 2000, p2: 2000 }, 
   menuOpen: false,
   calculando: false, 
   loaded: false,
-  
-  // Controle para exibir treinos ocultos e mudar dia manualmente
   showTreinoAdmin: false,
   diaSelecionadoManual: null 
 };
 
-// Cronômetro State
 let timerInterval = null;
 let timerTimeLeft = 0;
 let timerRunning = false;
 
 if(!window.storage){
   window.storage = {
-    get: async (key) => {
-      const val = localStorage.getItem(key);
-      return val ? { value: val } : null;
-    },
-    set: async (key, val) => {
-      localStorage.setItem(key, val);
-      return true;
-    }
+    get: async (key) => { const val = localStorage.getItem(key); return val ? { value: val } : null; },
+    set: async (key, val) => { localStorage.setItem(key, val); return true; }
   };
 }
 
@@ -583,7 +551,7 @@ function login(p){
   state.session = p; 
   state.perfilAtivo = p; 
   state.tab = 'treinos'; 
-  state.diaSelecionadoManual = null; // Reseta dia ao logar para puxar sempre o dia atual correto
+  state.diaSelecionadoManual = null; 
   applyTheme(p);
   render(); 
 }
@@ -608,7 +576,6 @@ function renderLogin(){
   `;
 }
 
-/* ---------- CRONÔMETRO ---------- */
 function startTimer(seconds) {
   if (timerInterval) clearInterval(timerInterval);
   timerTimeLeft = seconds;
@@ -651,10 +618,7 @@ function stopTimer() {
 function updateTimerUI() {
   const el = document.getElementById('timerContainer');
   if(!el) return;
-  if(timerTimeLeft <= 0) {
-    el.style.display = 'none';
-    return;
-  }
+  if(timerTimeLeft <= 0) { el.style.display = 'none'; return; }
   el.style.display = 'flex';
   const m = Math.floor(timerTimeLeft / 60);
   const s = timerTimeLeft % 60;
@@ -662,20 +626,13 @@ function updateTimerUI() {
   document.getElementById('timerPlayBtn').textContent = timerRunning ? 'PAUSAR' : 'RETOMAR';
 }
 
-/* ---------- ÁGUA E SURPRESA DIÁRIA ---------- */
-function getArredondado(valor) {
-  // Arredonda para o copo cheio mais próximo (múltiplos de 50ml ou 250ml)
-  return Math.round(valor / 50) * 50;
-}
+function getArredondado(valor) { return Math.round(valor / 50) * 50; }
 
 function addWater(amount){
   const p = state.perfilAtivo;
   state.water[p] = (state.water[p] || 0) + amount;
   safeSet('water_daily', state.water, true);
-  
-  if (state.water[p] >= state.waterMeta[p]) {
-    toast("Incrível! Você bateu sua meta de água hoje! 🎉");
-  }
+  if (state.water[p] >= state.waterMeta[p]) toast("Incrível! Você bateu sua meta de água hoje! 🎉");
   render();
 }
 
@@ -689,633 +646,556 @@ function clearWater(){
 function getSurpresaDoDia() {
   const hoje = new Date();
   const diaDoAno = Math.floor((hoje - new Date(hoje.getFullYear(), 0, 0)) / 86400000);
-  const indice = diaDoAno % SURPRESAS.length;
-  return SURPRESAS[indice];
+  return SURPRESAS[diaDoAno % SURPRESAS.length];
 }
 
-/* ---------- EVOLUÇÃO (RÁPIDA E DETALHADA) ---------- */
 function addEvRapida() {
-  const peso = parseFloat(document.getElementById('ev_rap_peso').value);
+  const pesoInput = document.getElementById('ev_rap_peso');
+  const peso = parseFloat(pesoInput ? pesoInput.value : 0);
   if(!peso) { toast("Digite o seu peso atual."); return; }
-  
   const p = state.perfilAtivo;
-  const novoLog = {
-    id: Date.now().toString(36),
-    data: new Date().toLocaleDateString('pt-BR'),
-    peso: peso
-  };
-  
-  state.evolucaoRapida[p].unshift(novoLog);
+  const novoLog = { id: 'ev_r_' + Date.now(), data: new Date().toLocaleDateString('pt-BR'), peso: peso };
+
+  if(!state.evolucaoRapida[p]) state.evolucaoRapida[p] = [];
+  state.evolucaoRapida[p].push(novoLog);
   safeSet('ev_rapida', state.evolucaoRapida, true);
-  document.getElementById('ev_rap_peso').value = '';
-  toast("Evolução rápida salva! 💪");
+  toast("Peso registrado com sucesso!");
   render();
 }
 
 function addEvDetalhada() {
-  const braço = parseFloat(document.getElementById('ev_det_braco').value) || 0;
-  const cintura = parseFloat(document.getElementById('ev_det_cintura').value) || 0;
-  const coxa = parseFloat(document.getElementById('ev_det_coxa').value) || 0;
-  const bf = parseFloat(document.getElementById('ev_det_bf').value) || 0;
-  
-  if(!braço && !cintura && !coxa && !bf) {
-    toast("Preencha pelo menos uma medida para salvar.");
-    return;
-  }
-  
   const p = state.perfilAtivo;
-  const novoLog = {
-    id: Date.now().toString(36),
-    data: new Date().toLocaleDateString('pt-BR'),
-    braco: braço,
-    cintura: cintura,
-    coxa: coxa,
-    bf: bf
-  };
-  
-  state.evolucaoDetalhada[p].unshift(novoLog);
+  const bEsquerdo = parseFloat(document.getElementById('det_b_esq')?.value || 0);
+  const bDireito = parseFloat(document.getElementById('det_b_dir')?.value || 0);
+  const abdomen = parseFloat(document.getElementById('det_abdomen')?.value || 0);
+  const coxaEsq = parseFloat(document.getElementById('det_coxa_esq')?.value || 0);
+  const coxaDir = parseFloat(document.getElementById('det_coxa_dir')?.value || 0);
+
+  if(!bEsquerdo && !bDireito && !abdomen && !coxaEsq && !coxaDir) { toast("Preencha ao menos uma medida corporal."); return; }
+
+  const novoLog = { id: 'ev_d_' + Date.now(), data: new Date().toLocaleDateString('pt-BR'), bEsquerdo, bDireito, abdomen, coxaEsq, coxaDir };
+  if(!state.evolucaoDetalhada[p]) state.evolucaoDetalhada[p] = [];
+  state.evolucaoDetalhada[p].push(novoLog);
   safeSet('ev_detalhada', state.evolucaoDetalhada, true);
-  
-  // Limpar inputs
-  document.getElementById('ev_det_braco').value = '';
-  document.getElementById('ev_det_cintura').value = '';
-  document.getElementById('ev_det_coxa').value = '';
-  document.getElementById('ev_det_bf').value = '';
-  
-  toast("Medidas mensais salvas com sucesso! 📏");
+  toast("Medidas registradas!");
   render();
 }
 
-/* ---------- TRATAMENTO DE EXCEL ---------- */
-function handleImport(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    try {
-      const data = evt.target.result;
-      const workbook = XLSX.read(data, {type: 'binary'});
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const rows = XLSX.utils.sheet_to_json(sheet);
-      
-      if(rows.length > 0) {
-        // Converte as linhas do excel para estrutura de exercícios
-        const exeEstruturado = rows.map((r, idx) => ({
-          id: 'ex_xls_' + idx + '_' + Date.now().toString(36),
-          nome: r.Nome || r.Exercicio || r.exercicio || 'Exercício Sem Nome',
-          series: String(r.Series || r.Séries || 4),
-          reps: String(r.Reps || r.Repetições || 10),
-          carga: String(r.Carga || 0),
-          feito: false
-        }));
-        
-        const p = state.perfilAtivo;
-        // Salva como uma nova lista customizada de treinos
-        state.treinos[p] = [{
-          id: 'custom_' + Date.now().toString(36),
-          nome: "Treino Customizado (Excel)",
-          exercicios: exeEstruturado
-        }];
-        safeSet('treinos:' + p, state.treinos[p], true);
-        toast("Treino do Excel importado com sucesso! 📊");
-        render();
-      }
-    } catch(err) {
-      toast("Falha ao ler o Excel. Verifique a planilha.");
-    }
-  };
-  reader.readAsBinaryString(file);
-}
-
-/* ---------- RENDER CENTRAL ---------- */
-function getTreinoDoDia(perfil) {
-  const hoje = new Date();
-  const diaSemana = hoje.getDay(); // 0 = Domingo, 1 = Segunda, etc.
-  
-  let treinoId = '';
-  if (perfil === 'p1') {
-    treinoId = MAPA_DIAS_TREINO_VINI[diaSemana];
-  } else {
-    treinoId = MAPA_DIAS_TREINO_YAS[diaSemana];
-  }
-  
-  return state.treinos[perfil].find(t => t.id === treinoId) || state.treinos[perfil][0];
-}
-
-function render() {
-  const root = document.getElementById('app');
-  if(!state.loaded){
-    // Mantém loader visível
-    return;
-  }
-  
-  if(!state.session){
-    root.innerHTML = renderLogin();
-    return;
-  }
-
+function cleanEvolutionData(type) {
   const p = state.perfilAtivo;
-  const perfilInfo = state.perfis[p];
-  
-  // Lógica de cálculo do progresso da meta diária de água
-  const aguaArredondada = getArredondado(state.water[p] || 0);
-  const metaAguaArredondada = getArredondado(state.waterMeta[p] || 2000);
-  const percentualAgua = Math.min(100, Math.round((aguaArredondada / metaAguaArredondada) * 100));
-
-  // Determina o treino a ser exibido (padrão do dia atual ou selecionado manualmente)
-  let treinoExibido = null;
-  if (state.diaSelecionadoManual) {
-    treinoExibido = state.treinos[p].find(t => t.id === state.diaSelecionadoManual);
-  } else {
-    treinoExibido = getTreinoDoDia(p);
-  }
-
-  // --- HTML HEADER E TOP BAR ---
-  let html = `
-    <div class="wrap animated-fade">
-      <div class="topbar">
-        <div class="left">
-          <button class="avatar" style="background:${perfilInfo.cor}" onclick="logout()" title="Sair do Perfil">
-            ${perfilInfo.nome[0].toUpperCase()}
-          </button>
-          <div class="wordmark">Kopple <span>· ${perfilInfo.nome}</span></div>
-        </div>
-        <button class="menuBtn" onclick="state.menuOpen = true; render();">Menu</button>
-      </div>
-  `;
-
-  // --- TAB: TREINOS (INTELIGENTE E LIMPO) ---
-  if(state.tab === 'treinos') {
-    html += `
-      <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Treino sugerido para hoje</span>
-        <select id="seletorTreinoManual" onchange="state.diaSelecionadoManual = this.value; render();" style="width: auto; padding: 4px 8px; font-size: 11px;">
-          ${state.treinos[p].map(t => `<option value="${t.id}" ${treinoExibido && treinoExibido.id === t.id ? 'selected' : ''}>${t.nome}</option>`).join('')}
-        </select>
-      </div>
-    `;
-
-    if(treinoExibido) {
-      const todosFeitos = treinoExibido.exercicios.every(ex => ex.feito);
-      html += `
-        <div class="dayCard">
-          <div class="dayHead" style="border-left: 4px solid var(--accent-2);">
-            <h3>${treinoExibido.nome}</h3>
-            ${todosFeitos ? `<span style="color:var(--accent-2); font-size:11px; font-weight:bold;">CONCLUÍDO! ⚡</span>` : ''}
-          </div>
-          <div class="dayBody">
-            <div class="exRow" style="border-bottom: 2px solid var(--line); font-weight:bold; margin-bottom: 4px;">
-              <div></div>
-              <div class="h">Exercício</div>
-              <div class="h" style="text-align:center;">Série</div>
-              <div class="h" style="text-align:center;">Reps</div>
-              <div class="h" style="text-align:center;">Carga</div>
-              <div></div>
-            </div>
-            ${treinoExibido.exercicios.map((ex, index) => `
-              <div class="exRow ${ex.feito ? 'done' : ''}">
-                <input type="checkbox" ${ex.feito ? 'checked' : ''} onchange="toggleEx('${treinoExibido.id}', '${ex.id}')">
-                <div class="exName">${ex.nome}</div>
-                <div style="text-align:center;">${ex.series}</div>
-                <div style="text-align:center;">${ex.reps}</div>
-                <div style="text-align:center; color: var(--accent-2);">${ex.carga}kg</div>
-                <button class="iconBtn" onclick="startTimer(90)">⏱️</button>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-    } else {
-      html += `<div class="empty">Nenhum treino encontrado para hoje. Use o seletor acima para escolher.</div>`;
-    }
-
-    // Área oculta de criação de treino / Importação por Excel
-    html += `
-      <div style="margin-top: 20px; text-align: center;">
-        <button class="btn ghost small" onclick="state.showTreinoAdmin = !state.showTreinoAdmin; render();">
-          ${state.showTreinoAdmin ? 'Ocultar Opções de Planilha' : 'Importar planilha Excel/Admin'}
-        </button>
-      </div>
-
-      <div class="panel" id="adminTreinoPanel" style="display: ${state.showTreinoAdmin ? 'block' : 'none'}; margin-top: 15px;">
-        <h3 style="font-size: 14px; margin-bottom:10px;">Importar Treino via Excel (.xlsx)</h3>
-        <p class="hint">Adicione uma planilha com as colunas: <strong>Nome</strong>, <strong>Series</strong>, <strong>Reps</strong> e <strong>Carga</strong>.</p>
-        <input type="file" accept=".xlsx, .xls" onchange="handleImport(event)" style="border:none; padding:10px 0;">
-      </div>
-    `;
-  }
-
-  // --- TAB: PROGRESSO / EVOLUÇÃO ---
-  else if(state.tab === 'progresso') {
-    html += `
-      <h2 style="font-size: 18px; margin-bottom: 16px;">Controle de Evolução</h2>
-      
-      <div class="panel">
-        <h3 style="font-size:14px; margin-bottom: 10px;">Consumo de Água</h3>
-        <div class="waterWidget">
-          <div class="waterProgress">
-            <div class="waterBar" style="width: ${percentualAgua}%"></div>
-          </div>
-          <div style="font-size: 13px; font-weight:bold;">${aguaArredondada}ml / ${metaAguaArredondada}ml</div>
-        </div>
-        <div class="btnRow" style="margin-top: 12px;">
-          <button class="btn small" onclick="addWater(250)">+250ml</button>
-          <button class="btn small" onclick="addWater(500)">+500ml</button>
-          <button class="btn small ghost" onclick="clearWater()">Resetar</button>
-        </div>
-      </div>
-
-      ${percentualAgua >= 100 ? `
-        <div class="surprise-box">
-          <div class="surprise-title">🌟 Surpresa diária liberada! 🌟</div>
-          <div style="font-size: 13px; line-height:1.4;">"${getSurpresaDoDia()}"</div>
-        </div>
-      ` : ''}
-
-      <div class="rowGrid">
-        
-        <div class="panel">
-          <h3 style="font-size:14px; margin-bottom:10px;">Evolução Rápida</h3>
-          <p class="hint">Acompanhamento simples e ágil.</p>
-          <div class="field" style="margin-top: 10px;">
-            <label>Peso atual (kg)</label>
-            <div style="display:flex; gap:6px;">
-              <input type="number" step="0.1" id="ev_rap_peso" placeholder="Ex: 75.5">
-              <button class="btn" onclick="addEvRapida()">Salvar</button>
-            </div>
-          </div>
-          <div style="max-height: 150px; overflow-y:auto; font-size:12px; margin-top:10px;">
-            ${(state.evolucaoRapida[p] || []).length === 0 ? '<div class="empty">Sem registros rápidos ainda.</div>' : ''}
-            ${(state.evolucaoRapida[p] || []).map(log => `
-              <div style="display:flex; justify-content:space-between; padding: 6px 0; border-bottom:1px solid var(--line);">
-                <span>${log.data}</span>
-                <strong style="color:var(--accent-2);">${log.peso} kg</strong>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-        <div class="panel">
-          <h3 style="font-size:14px; margin-bottom:10px;">Evolução Mensal Detalhada</h3>
-          <p class="hint">Medidas profundas de fita métrica/gordura.</p>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top: 10px;">
-            <div class="field">
-              <label>Braço (cm)</label>
-              <input type="number" step="0.1" id="ev_det_braco" placeholder="Ex: 35">
-            </div>
-            <div class="field">
-              <label>Cintura (cm)</label>
-              <input type="number" step="0.1" id="ev_det_cintura" placeholder="Ex: 80">
-            </div>
-            <div class="field">
-              <label>Coxa (cm)</label>
-              <input type="number" step="0.1" id="ev_det_coxa" placeholder="Ex: 55">
-            </div>
-            <div class="field">
-              <label>% Gordura (BF)</label>
-              <input type="number" step="0.1" id="ev_det_bf" placeholder="Ex: 14">
-            </div>
-          </div>
-          <button class="btn small" style="width:100%; margin-top:8px;" onclick="addEvDetalhada()">Salvar Medidas Mensais</button>
-          
-          <div style="max-height: 120px; overflow-y:auto; font-size:11px; margin-top:12px;">
-            ${(state.evolucaoDetalhada[p] || []).length === 0 ? '<div class="empty">Sem medições detalhadas.</div>' : ''}
-            ${(state.evolucaoDetalhada[p] || []).map(log => `
-              <div style="padding: 6px 0; border-bottom:1px solid var(--line); line-height: 1.4;">
-                <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:2px;">
-                  <span>Medição ${log.data}</span>
-                </div>
-                <div style="color:var(--muted); display:flex; gap:10px;">
-                  ${log.braco ? `<span>Braço: ${log.braco}cm</span>` : ''}
-                  ${log.cintura ? `<span>Cintura: ${log.cintura}cm</span>` : ''}
-                  ${log.coxa ? `<span>Coxa: ${log.coxa}cm</span>` : ''}
-                  ${log.bf ? `<span>BF: ${log.bf}%</span>` : ''}
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-      </div>
-    `;
-  }
-
-  // --- TAB: CALCULADORA ---
-  else if(state.tab === 'calc') {
-    const calcResult = state.calc[p];
-    html += `
-      <h2 style="font-size:18px; margin-bottom:16px;">Calculadora Metabólica</h2>
-      ${state.calculando ? `
-        <div class="calc-loader">
-          <div class="calc-anim-icons">
-            <svg class="anim-weight" viewBox="0 0 24 24"><path d="M4 9v6M2 10.5v3M8 6v12M16 6v12M20 10.5v3M22 9v6M8 12h8"/></svg>
-            <div class="anim-bottle-container"><div class="anim-bottle-fill"></div></div>
-          </div>
-          <div>Processando biotipo e calculando macros...</div>
-        </div>
-      ` : ''}
-
-      <div class="panel">
-        <div class="rowGrid">
-          <div class="field">
-            <label>Peso (kg)</label>
-            <input type="number" step="0.1" id="c_peso" value="${calcResult?.peso || ''}">
-          </div>
-          <div class="field">
-            <label>Altura (cm)</label>
-            <input type="number" id="c_altura" value="${calcResult?.altura || ''}">
-          </div>
-        </div>
-        <div class="rowGrid">
-          <div class="field">
-            <label>Idade (anos)</label>
-            <input type="number" id="c_idade" value="${calcResult?.idade || ''}">
-          </div>
-          <div class="field">
-            <label>Sexo</label>
-            <select id="c_sexo">
-              <option value="M" ${calcResult?.sexo === 'M' ? 'selected' : ''}>Masculino</option>
-              <option value="F" ${calcResult?.sexo === 'F' ? 'selected' : ''}>Feminino</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label>Nível de Atividade</label>
-          <select id="c_atividade">
-            <option value="1.2" ${calcResult?.fator == 1.2 ? 'selected' : ''}>Sedentário (Pouco/Sem exercício)</option>
-            <option value="1.375" ${calcResult?.fator == 1.375 ? 'selected' : ''}>Moderado (Treina 3-5x/semana)</option>
-            <option value="1.55" ${calcResult?.fator == 1.55 ? 'selected' : ''}>Intenso (Treina pesado todo dia)</option>
-          </select>
-        </div>
-        <div class="rowGrid">
-          <div class="field">
-            <label>Objetivo</label>
-            <select id="c_meta">
-              <option value="manter" ${calcResult?.meta === 'manter' ? 'selected' : ''}>Manter Peso</option>
-              <option value="ganhar" ${calcResult?.meta === 'ganhar' ? 'selected' : ''}>Hipertrofia (Ganhar Massa)</option>
-              <option value="perder" ${calcResult?.meta === 'perder' ? 'selected' : ''}>Definição (Perder Gordura)</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Fórmula</label>
-            <select id="c_formula" onchange="onFormulaChange()">
-              <option value="harris" ${calcResult?.formula === 'harris' ? 'selected' : ''}>Harris-Benedict</option>
-              <option value="mifflin" ${calcResult?.formula === 'mifflin' ? 'selected' : ''}>Mifflin-St Jeor</option>
-              <option value="katch" ${calcResult?.formula === 'katch' ? 'selected' : ''}>Katch-McArdle (% BF)</option>
-            </select>
-          </div>
-        </div>
-        <div class="field" id="gordura_field" style="display: ${calcResult?.formula === 'katch' ? 'block' : 'none'};">
-          <label>% de Gordura Corporal</label>
-          <input type="number" id="c_gordura" value="${calcResult?.gordura || ''}">
-        </div>
-        <div class="rowGrid">
-          <div class="field">
-            <label>Ajuste de Calorias</label>
-            <input type="number" id="c_ajuste" value="${calcResult?.ajuste || '300'}">
-          </div>
-        </div>
-        <button class="btn" style="width:100%;" onclick="calcular()">Calcular Macros</button>
-      </div>
-
-      ${calcResult && !state.calculando ? `
-        <div class="panel animated-fade" style="border-top: 4px solid var(--accent-2);">
-          <h3 style="font-size:15px; margin-bottom:12px;">Resultados Calculados</h3>
-          <div class="plates">
-            <div class="plate accent">
-              <div class="val">${calcResult.tmb}</div>
-              <div class="lbl">TMB (Kcal)</div>
-            </div>
-            <div class="plate">
-              <div class="val">${calcResult.get}</div>
-              <div class="lbl">Gasto Diário</div>
-            </div>
-            <div class="plate accent2">
-              <div class="val">${calcResult.alvo}</div>
-              <div class="lbl">Meta Diária</div>
-            </div>
-          </div>
-          <div class="tear"></div>
-          <div class="ledger">
-            <div class="ledgerRow">
-              <div>Proteínas <span class="meta">~2g/kg</span></div>
-              <strong style="color:var(--accent-2);">${calcResult.macros?.proteina || 0}g</strong>
-            </div>
-            <div class="ledgerRow">
-              <div>Carboidratos</div>
-              <strong style="color:var(--accent-2);">${calcResult.macros?.carboidrato || 0}g</strong>
-            </div>
-            <div class="ledgerRow">
-              <div>Gorduras <span class="meta">~1g/kg</span></div>
-              <strong style="color:var(--accent-2);">${calcResult.macros?.gordura || 0}g</strong>
-            </div>
-          </div>
-        </div>
-      ` : ''}
-    `;
-  }
-
-  // --- TAB: MURAL ---
-  else if(state.tab === 'mural') {
-    html += `
-      <h2 style="font-size:18px; margin-bottom:16px;">Mural de Posts e Conquistas</h2>
-      <div class="panel composer">
-        <textarea id="composer_text" placeholder="Compartilhe o treino de hoje, evolução ou foto motivacional..."></textarea>
-        <button class="btn small" onclick="addPost()">Postar</button>
-      </div>
-      <div id="postsContainer">
-        ${state.mural.length === 0 ? '<div class="empty">Nenhuma publicação ainda. Seja o primeiro!</div>' : ''}
-        ${state.mural.map(post => `
-          <div class="postCard animated-fade">
-            <div class="postHead">
-              <div class="avatar avatarSmall" style="background:${state.perfis[post.autorId]?.cor || '#777'}">
-                ${post.autor[0].toUpperCase()}
-              </div>
-              <div>
-                <div class="who">${post.autor}</div>
-                <div class="when">${post.data}</div>
-              </div>
-            </div>
-            <div class="postText">${post.texto}</div>
-            <div class="postFoot">
-              <button class="likeBtn ${post.curtido ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
-                ❤️ ${post.curtidas || 0} Curtidas
-              </button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  // --- BOTTOM NAVIGATION BAR ---
-  html += `
-    </div> <div class="bottomNav">
-      <div class="bottomNavInner">
-        <button class="navBtn ${state.tab === 'treinos' ? 'active' : ''}" onclick="state.tab = 'treinos'; render();">
-          ${ICONS.treinos}
-          <span>Treinos</span>
-        </button>
-        <button class="navBtn ${state.tab === 'progresso' ? 'active' : ''}" onclick="state.tab = 'progresso'; render();">
-          ${ICONS.progresso}
-          <span>Evolução</span>
-        </button>
-        <button class="navBtn ${state.tab === 'calc' ? 'active' : ''}" onclick="state.tab = 'calc'; render();">
-          ${ICONS.calc}
-          <span>Macros</span>
-        </button>
-        <button class="navBtn ${state.tab === 'mural' ? 'active' : ''}" onclick="state.tab = 'mural'; render();">
-          ${ICONS.mural}
-          <span>Mural</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="timerBar" id="timerContainer" style="display:none;">
-      <div>Tempo de Descanso: <span class="time" id="timerDisplay">00:00</span></div>
-      <div class="timerBtnRow">
-        <button class="btn small" id="timerPlayBtn" onclick="toggleTimerRun()">PAUSAR</button>
-        <button class="btn small ghost" onclick="stopTimer()">OK</button>
-      </div>
-    </div>
-
-    <div class="menuOverlay ${state.menuOpen ? 'open' : ''}" onclick="state.menuOpen = false; render();"></div>
-    <div class="menuPanel ${state.menuOpen ? 'open' : ''}">
-      <h3 class="display">Opções Kopple</h3>
-      <div class="menuItem" onclick="state.menuOpen = false; render();">Fechar Menu</div>
-      <div class="menuItem" onclick="logout()">Trocar Perfil / Sair</div>
-      <div class="tear"></div>
-      <div class="field">
-        <label>Personalizar cor do perfil</label>
-        <div class="color-picker-wrap">
-          <input type="color" value="${perfilInfo.cor}" onchange="updateColor('${p}', this.value)">
-          <span style="font-size:11px;">Mudar paleta</span>
-        </div>
-      </div>
-    </div>
-  `;
-
-  root.innerHTML = html;
-  updateTimerUI();
+  if (type === 'rapida') { state.evolucaoRapida[p] = []; safeSet('ev_rapida', state.evolucaoRapida, true); } 
+  else { state.evolucaoDetalhada[p] = []; safeSet('ev_detalhada', state.evolucaoDetalhada, true); }
+  toast("Histórico limpo!");
+  render();
 }
 
-/* ---------- EVENTOS E MANIPULAÇÃO ---------- */
-function toggleEx(treinoId, exId){
+function exportToExcel() {
+  try {
+    const wb = XLSX.utils.book_new();
+    const treinosData = [];
+    for(let p in state.treinos) {
+      state.treinos[p].forEach(t => {
+        t.exercicios.forEach(e => { treinosData.push({ Perfil: p, Treino: t.nome, Exercicio: e.nome, Series: e.series, Repeticoes: e.reps, Carga: e.carga }); });
+      });
+    }
+    const wsTreinos = XLSX.utils.json_to_sheet(treinosData);
+    XLSX.utils.book_append_sheet(wb, wsTreinos, "Treinos");
+
+    const progData = [];
+    for(let p in state.evolucaoRapida) {
+      state.evolucaoRapida[p].forEach(log => { progData.push({ Perfil: p, Data: log.data, Peso: log.peso }); });
+    }
+    const wsProg = XLSX.utils.json_to_sheet(progData);
+    XLSX.utils.book_append_sheet(wb, wsProg, "Historico_Peso");
+
+    XLSX.writeFile(wb, "Kopple_Data_Backup.xlsx");
+    toast("Dados exportados para Excel!");
+  } catch (e) { toast("Erro ao exportar planilhas."); }
+}
+
+function calcNutrition() {
   const p = state.perfilAtivo;
-  const treino = state.treinos[p].find(t => t.id === treinoId);
-  if(treino) {
-    const ex = treino.exercicios.find(e => e.id === exId);
-    if(ex) {
-      ex.feito = !ex.feito;
-      safeSet('treinos:'+p, state.treinos[p], true);
-      render();
-    }
-  }
-}
+  const genero = document.getElementById('calc_genero').value;
+  const peso = parseFloat(document.getElementById('calc_peso').value);
+  const altura = parseFloat(document.getElementById('calc_altura').value);
+  const idade = parseInt(document.getElementById('calc_idade').value);
+  const atividade = parseFloat(document.getElementById('calc_atividade').value);
+  const objetivo = document.getElementById('calc_objetivo').value;
 
-function onFormulaChange(){
-  const f = document.getElementById('c_formula').value;
-  document.getElementById('gordura_field').style.display = (f === 'katch') ? 'block' : 'none';
-}
+  if(!peso || !altura || !idade) { toast("Por favor, preencha todos os campos do cálculo."); return; }
 
-function calcularTMB(formula, peso, altura, idade, sexo, gordura){
-  if(formula === 'harris'){
-    return sexo === 'M'
-      ? 88.362 + 13.397*peso + 4.799*altura - 5.677*idade
-      : 447.593 + 9.247*peso + 3.098*altura - 4.330*idade;
-  }
-  if(formula === 'katch'){
-    const mMagra = peso * (1 - (gordura||0)/100);
-    return 370 + 21.6 * mMagra;
-  }
-  return (10*peso) + (6.25*altura) - (5*idade) + (sexo === 'M' ? 5 : -161);
-}
-
-function calcular(){
-  const peso = parseFloat(document.getElementById('c_peso').value);
-  const altura = parseFloat(document.getElementById('c_altura').value);
-  const idade = parseInt(document.getElementById('c_idade').value);
-  const sexo = document.getElementById('c_sexo').value;
-  const fator = parseFloat(document.getElementById('c_atividade').value);
-  const meta = document.getElementById('c_meta').value;
-  const ajuste = parseInt(document.getElementById('c_ajuste').value) || 0;
-  const formula = document.getElementById('c_formula').value;
-  const gordura = parseFloat(document.getElementById('c_gordura').value) || 0;
-  
-  if(!peso || !altura || !idagem){ toast('Preencha peso, altura e idade.'); return; }
-  
   state.calculando = true;
   render();
 
   setTimeout(() => {
-    const tmb = calcularTMB(formula, peso, altura, idade, sexo, gordura);
-    const get = tmb * fator;
-    let alvo = get;
-    
-    if(meta === 'ganhar') alvo = get + ajuste;
-    if(meta === 'perder') alvo = get - ajuste;
-    
-    // Cálculo sugerido de Macronutrientes para musculação
-    const protG = Math.round(peso * 2);
-    const gordG = Math.round(peso * 1);
-    const calRestantes = alvo - (protG * 4) - (gordG * 9);
-    const carbG = Math.max(0, Math.round(calRestantes / 4));
+    let tmb = genero === 'M' ? (88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * idade)) : (447.593 + (9.247 * peso) + (3.098 * altura) - (4.330 * idade));
+    const get = tmb * atividade;
+    let caloriasAlvo = get;
 
-    const result = { 
-      peso, altura, idade, sexo, fator, meta, ajuste, formula, gordura,
-      tmb: Math.round(tmb), 
-      get: Math.round(get),
-      alvo: Math.round(alvo),
-      macros: { proteina: protG, carboidrato: carbG, gordura: gordG }
+    if (objetivo === 'perda') caloriasAlvo -= 450;
+    else if (objetivo === 'ganho') caloriasAlvo += 350;
+
+    const proteinas = peso * 2;
+    const gorduras = peso * 0.9;
+    const carboidratos = (caloriasAlvo - (proteinas * 4) - (gorduras * 9)) / 4;
+
+    state.calc[p] = {
+      tmb: Math.round(tmb), get: Math.round(get), alvo: Math.round(caloriasAlvo),
+      proteinas: Math.round(proteinas), gorduras: Math.round(gorduras), carboidratos: Math.round(carboidratos > 0 ? carboidratos : 0)
     };
 
-    const p = state.perfilAtivo;
-    state.calc[p] = result;
     state.calculando = false;
-
-    safeSet('calc:' + p, result, true);
-    toast('Macros calculados com sucesso! 📊');
+    safeSet('calc:'+p, state.calc[p], true);
+    toast("Plano calculado e salvo!");
     render();
-  }, 1200);
+  }, 1600);
 }
 
-/* ---------- MURAL ACTIONS ---------- */
-function addPost(){
-  const input = document.getElementById('composer_text');
-  const txt = input.value.trim();
-  if(!txt) return;
+function changeTab(tabName) { state.tab = tabName; state.menuOpen = false; render(); }
+function selectDayDot(index) { state.diaSelecionadoManual = index === 0 ? 7 : index; render(); }
+
+function checkExercicio(treinoId, exId, checked) {
   const p = state.perfilAtivo;
-  const perfil = state.perfis[p];
-  
-  const novoPost = {
-    id: Date.now().toString(36),
-    autor: perfil.nome,
-    autorId: p,
-    texto: txt,
-    data: new Date().toLocaleString('pt-BR'),
-    curtidas: 0,
-    curtido: false
-  };
-  
-  state.mural.unshift(novoPost);
-  safeSet('mural', state.mural, true);
-  input.value = '';
-  render();
-}
-
-function toggleLike(id){
-  const post = state.mural.find(p => p.id === id);
-  if(post) {
-    post.curtido = !post.curtido;
-    post.curtidas = post.curtido ? post.curtidas + 1 : post.curtidas - 1;
-    safeSet('mural', state.mural, true);
-    render();
+  const treino = state.treinos[p].find(t => t.id === treinoId);
+  if(treino) {
+    const ex = treino.exercicios.find(e => e.id === exId);
+    if(ex) { ex.feito = checked; safeSet('treinos:'+p, state.treinos[p], true); render(); }
   }
 }
 
-// Inicia tudo ao abrir a página
-loadAll();
+function updateCarga(treinoId, exId, value) {
+  const p = state.perfilAtivo;
+  const treino = state.treinos[p].find(t => t.id === treinoId);
+  if(treino) {
+    const ex = treino.exercicios.find(e => e.id === exId);
+    if(ex) { ex.carga = value; safeSet('treinos:'+p, state.treinos[p], true); }
+  }
+}
+
+function getTreinoDoDia() {
+  const p = state.perfilAtivo;
+  let dia = new Date().getDay();
+  if (state.diaSelecionadoManual !== null) dia = state.diaSelecionadoManual === 7 ? 0 : state.diaSelecionadoManual;
+
+  const mapa = p === 'p1' ? MAPA_DIAS_TREINO_VINI : MAPA_DIAS_TREINO_YAS;
+  const treinoId = mapa[dia];
+  
+  if (treinoId === "descanso") return "descanso";
+  return state.treinos[p].find(t => t.id === treinoId) || null;
+}
+
+function toggleMeta(id, checked) {
+  const meta = state.metas.find(m => m.id === id);
+  if(meta) { meta.concluida = checked; safeSet('metas', state.metas, true); render(); }
+}
+
+function renderContent() {
+  const p = state.perfilAtivo;
+  
+  if(state.tab === 'treinos') {
+    const treinoHoje = getTreinoDoDia();
+    const diaAtual = new Date().getDay();
+    const activeDayIndex = state.diaSelecionadoManual !== null ? state.diaSelecionadoManual : (diaAtual === 0 ? 7 : diaAtual);
+    
+    let dotsHtml = '';
+    DIAS_SEMANA.forEach((dia, i) => {
+      const idx = i + 1; 
+      const isToday = activeDayIndex === idx;
+      dotsHtml += `
+        <div class="dayDot ${isToday ? 'today' : ''}" onclick="selectDayDot(${idx})">
+          <div class="lbl">${dia}</div>
+          <div class="circ">${idx}</div>
+        </div>
+      `;
+    });
+
+    // ALTERAÇÃO: Tratamento visual para o Dia de Descanso
+    let exListHtml = '';
+    let treinoNome = '';
+
+    if(treinoHoje === "descanso") {
+      treinoNome = 'Dia de Descanso 🧘‍♂️';
+      exListHtml = `
+        <div class="empty" style="padding: 30px 10px;">
+          <h3 style="color:var(--accent-2); margin-bottom: 8px;">Recuperação Muscular</h3>
+          <p>Hoje o corpo precisa de descanso para crescer. Mantenha a hidratação alta e, se quiser, faça apenas um cardio leve ou alongamentos!</p>
+        </div>`;
+    } else if(treinoHoje) {
+      treinoNome = treinoHoje.nome;
+      exListHtml = `
+        <div class="exRow" style="border-bottom:2px solid var(--line); font-weight:700;">
+          <div></div><div class="h">Exercício</div><div class="h" style="text-align:center;">Sér.</div><div class="h" style="text-align:center;">Rep.</div><div class="h" style="text-align:center;">Carga (kg)</div><div></div>
+        </div>
+      ` + treinoHoje.exercicios.map(ex => `
+        <div class="exRow ${ex.feito ? 'done' : ''}">
+          <input type="checkbox" ${ex.feito ? 'checked' : ''} onchange="checkExercicio('${treinoHoje.id}', '${ex.id}', this.checked)">
+          <div class="exName" style="font-weight:500;">${ex.nome}</div>
+          <div style="color:var(--muted); text-align:center;">${ex.series}s</div>
+          <div style="color:var(--muted); text-align:center;">${ex.reps}r</div>
+          <div><input type="text" style="padding:4px; font-size:11px; text-align:center;" value="${ex.carga}" onchange="updateCarga('${treinoHoje.id}', '${ex.id}', this.value)"></div>
+          <button class="iconBtn" onclick="startTimer(90)">⏱️</button>
+        </div>
+      `).join('');
+    } else {
+      treinoNome = 'Sem Treino';
+      exListHtml = '<div class="empty">Nenhum exercício programado.</div>';
+    }
+
+    return `
+      <div class="animated-fade">
+        <div class="surprise-box">
+          <div class="surprise-title">🌟 Surpresa Kopple do Dia 🌟</div>
+          <div style="font-size:12.5px; line-height:1.4;">${getSurpresaDoDia()}</div>
+        </div>
+
+        <div class="panel" style="padding:16px;">
+          <h3 style="font-size:12px; margin-bottom:12px; color:var(--muted);">Selecione o Dia de Treino</h3>
+          <div class="weekStrip">${dotsHtml}</div>
+        </div>
+
+        <div class="dayCard">
+          <div class="dayHead">
+            <div>
+              <div style="font-size:10px; text-transform:uppercase; color:var(--accent-2); font-weight:600;">Treino de Hoje</div>
+              <h3>${treinoNome}</h3>
+            </div>
+          </div>
+          <div class="dayBody">
+            ${exListHtml}
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>💧 Meta de Hidratação</h3>
+          <p class="hint">Adicione sua ingestão de água diária de forma rápida para manter o corpo funcionando no ápice.</p>
+          <div class="waterWidget" style="margin-top:14px;">
+            <div style="font-weight:700; font-size:16px; min-width:90px;">${state.water[p] || 0} / ${state.waterMeta[p]}ml</div>
+            <div class="waterProgress">
+              <div class="waterBar" style="width: ${Math.min(100, (((state.water[p] || 0) / state.waterMeta[p]) * 100))}%"></div>
+            </div>
+          </div>
+          <div class="btnRow" style="margin-top:14px;">
+            <button class="btn small" onclick="addWater(250)">+250ml 🥛</button>
+            <button class="btn small" onclick="addWater(500)">+500ml 🍺</button>
+            <button class="btn small ghost" onclick="clearWater()">Resetar</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if(state.tab === 'progresso') {
+    const listRapida = state.evolucaoRapida[p] || [];
+    const listDetalhada = state.evolucaoDetalhada[p] || [];
+
+    // ALTERAÇÃO: Renderização do Gráfico CSS de Pesos
+    let chartHtml = '';
+    if(listRapida.length > 0) {
+      const pesos = listRapida.map(l => l.peso);
+      const minP = Math.min(...pesos) - 2; 
+      const maxP = Math.max(...pesos) + 2;
+      const range = maxP - minP;
+
+      const bars = listRapida.slice(-10).map(log => {
+        const hPct = range === 0 ? 50 : ((log.peso - minP) / range) * 100;
+        return `
+          <div class="chart-bar-wrap" title="${log.peso}kg em ${log.data}">
+            <div class="chart-val">${log.peso}</div>
+            <div class="chart-bar" style="height: ${hPct}%;"></div>
+          </div>
+        `;
+      }).join('');
+      chartHtml = `<div class="chart">${bars}</div>`;
+    }
+
+    let pesosLogHtml = listRapida.length ? listRapida.slice().reverse().map(log => `
+      <div class="ledgerRow">
+        <div><strong>${log.peso} kg</strong> <span class="meta">${log.data}</span></div>
+      </div>
+    `).join('') : '<div class="empty">Nenhum peso registrado ainda.</div>';
+
+    let medidasLogHtml = listDetalhada.length ? listDetalhada.slice().reverse().map(log => `
+      <div class="ledgerRow" style="font-size:12px;">
+        <div>
+          <strong>${log.data}</strong><br>
+          <span style="color:var(--muted)">Bíc: ${log.bEsquerdo}/${log.bDireito}cm | Coxa: ${log.coxaEsq}/${log.coxaDir}cm | Abd: ${log.abdomen}cm</span>
+        </div>
+      </div>
+    `).join('') : '<div class="empty">Nenhuma medida corporal registrada.</div>';
+
+    return `
+      <div class="animated-fade">
+        <div class="panel">
+          <h3>Evolução Corporal</h3>
+          <p class="hint">Acompanhe seu progresso ao longo do tempo. Digite seu peso ou suas medidas para registrar no seu perfil.</p>
+          
+          <div class="tear"></div>
+          
+          <h4 style="font-family:'Oswald',sans-serif; margin-bottom:10px;">Progresso de Peso Rápido</h4>
+          <div class="rowGrid">
+            <div class="field">
+              <label>Peso Corporal (kg)</label>
+              <input type="number" step="0.1" id="ev_rap_peso" placeholder="Ex: 75.5">
+            </div>
+            <div class="field" style="display:flex; align-items:flex-end;">
+              <button class="btn" style="width:100%;" onclick="addEvRapida()">Registrar Peso</button>
+            </div>
+          </div>
+          
+          ${chartHtml}
+
+          <div class="ledger" style="margin-top:14px; max-height:180px; overflow-y:auto;">
+            ${pesosLogHtml}
+          </div>
+          ${listRapida.length ? `<button class="btn small ghost" style="margin-top:8px; width:100%;" onclick="cleanEvolutionData('rapida')">Limpar Histórico</button>` : ''}
+          
+          <div class="tear"></div>
+
+          <h4 style="font-family:'Oswald',sans-serif; margin-bottom:10px;">Medidas Corporais Detalhadas</h4>
+          <div class="rowGrid">
+            <div class="field"><label>Bíceps Esq (cm)</label><input type="number" step="0.1" id="det_b_esq"></div>
+            <div class="field"><label>Bíceps Dir (cm)</label><input type="number" step="0.1" id="det_b_dir"></div>
+            <div class="field"><label>Abdomen (cm)</label><input type="number" step="0.1" id="det_abdomen"></div>
+            <div class="field"><label>Coxa Esq (cm)</label><input type="number" step="0.1" id="det_coxa_esq"></div>
+            <div class="field"><label>Coxa Dir (cm)</label><input type="number" step="0.1" id="det_coxa_dir"></div>
+            <div class="field" style="display:flex; align-items:flex-end;">
+              <button class="btn" style="width:100%;" onclick="addEvDetalhada()">Registrar Medidas</button>
+            </div>
+          </div>
+          <div class="ledger" style="margin-top:14px; max-height:180px; overflow-y:auto;">
+            ${medidasLogHtml}
+          </div>
+          ${listDetalhada.length ? `<button class="btn small ghost" style="margin-top:8px; width:100%;" onclick="cleanEvolutionData('detalhada')">Limpar Medidas</button>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  if(state.tab === 'calc') {
+    const calculated = state.calc[p];
+
+    return `
+      <div class="animated-fade">
+        <div class="panel">
+          <h3>Calculadora TMB & Macronutrientes</h3>
+          <p class="hint">Calcule suas necessidades de forma individualizada com base no gasto calórico diário.</p>
+          
+          <div class="tear"></div>
+          
+          ${state.calculando ? `
+            <div class="calc-loader">
+              <div class="calc-anim-icons">
+                <svg class="anim-weight" viewBox="0 0 24 24"><path d="M4 9v6M2 10.5v3M8 6v12M16 6v12M20 10.5v3M22 9v6M8 12h8"/></svg>
+                <div class="anim-bottle-container"><div class="anim-bottle-fill"></div></div>
+              </div>
+              <div style="font-size:12px; font-weight:bold; color:var(--accent-2);">CALCULANDO METAS NUTRICIONAIS...</div>
+            </div>
+          ` : ''}
+
+          <div class="rowGrid">
+            <div class="field">
+              <label>Gênero</label>
+              <select id="calc_genero">
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Idade (anos)</label>
+              <input type="number" id="calc_idade" value="25">
+            </div>
+          </div>
+
+          <div class="rowGrid">
+            <div class="field">
+              <label>Peso Atual (kg)</label>
+              <input type="number" step="0.1" id="calc_peso" placeholder="Ex: 78">
+            </div>
+            <div class="field">
+              <label>Altura (cm)</label>
+              <input type="number" id="calc_altura" placeholder="Ex: 178">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Nível de Atividade</label>
+            <select id="calc_atividade">
+              <option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
+              <option value="1.375">Levemente ativo (exercício 1-3 dias/semana)</option>
+              <option value="1.55">Moderadamente ativo (exercício 3-5 dias/semana)</option>
+              <option value="1.725">Altamente ativo (exercício pesado 6-7 dias/semana)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Objetivo</label>
+            <select id="calc_objetivo">
+              <option value="manter">Manter o Peso</option>
+              <option value="perda">Perder Gordura (-450 kcal)</option>
+              <option value="ganho">Massa Muscular (+350 kcal)</option>
+            </select>
+          </div>
+
+          <button class="btn" style="width:100%; margin-top:10px;" onclick="calcNutrition()">Calcular Plano Alimentar</button>
+        </div>
+
+        ${calculated ? `
+          <div class="panel animated-fade" style="border-top:3px solid var(--accent-2);">
+            <h3 style="color:var(--accent-2);">Seu Plano Nutricional</h3>
+            
+            <div class="plates">
+              <div class="plate accent">
+                <div class="val">${calculated.tmb}</div>
+                <div class="lbl">TMB (kcal)</div>
+              </div>
+              <div class="plate accent2">
+                <div class="val">${calculated.get}</div>
+                <div class="lbl">Gasto Diário</div>
+              </div>
+              <div class="plate" style="border-color:#3182ce;">
+                <div class="val" style="color:#3182ce;">${calculated.alvo}</div>
+                <div class="lbl">Alvo Diário</div>
+              </div>
+            </div>
+
+            <div class="tear"></div>
+
+            <div style="font-size:13px; line-height:1.6;">
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line);">
+                <span>🥩 Proteínas</span><strong>${calculated.proteinas}g <span style="font-size:11px; color:var(--muted)">(${calculated.proteinas * 4} kcal)</span></strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line);">
+                <span>🍠 Carboidratos</span><strong>${calculated.carboidratos}g <span style="font-size:11px; color:var(--muted)">(${calculated.carboidratos * 4} kcal)</span></strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0;">
+                <span>🥑 Gorduras</span><strong>${calculated.gorduras}g <span style="font-size:11px; color:var(--muted)">(${calculated.gorduras * 9} kcal)</span></strong>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  if(state.tab === 'mural') {
+    const metasHtml = state.metas.map(meta => `
+      <div class="metaRow ${meta.concluida ? 'done' : ''}">
+        <input type="checkbox" ${meta.concluida ? 'checked' : ''} onchange="toggleMeta('${meta.id}', this.checked)">
+        <span>${meta.texto}</span>
+      </div>
+    `).join('');
+
+    const concluidas = state.metas.filter(m => m.concluida).length;
+    const totalMetas = state.metas.length;
+    const pct = Math.round((concluidas / totalMetas) * 100);
+
+    return `
+      <div class="animated-fade">
+        <div class="panel">
+          <h3>🏆 Metas Semanais do Casal</h3>
+          <div class="progressBar">
+            <div class="progressBarInner" style="width: ${pct}%"></div>
+          </div>
+          <div style="font-size:11px; color:var(--muted); text-align:right; margin-bottom:12px;">${concluidas}/${totalMetas} Concluídas (${pct}%)</div>
+          ${metasHtml}
+        </div>
+
+        <div class="panel">
+          <h3>📸 Mural Compartilhado</h3>
+          <p class="hint">Envie fotos e registre mensagens para manter a chama e a motivação do casal no topo!</p>
+          <div class="empty">Em breve, você poderá sincronizar fotos em tempo real com o servidor! 🤩</div>
+        </div>
+      </div>
+    `;
+  }
+  return '';
+}
+
+function render() {
+  const app = document.getElementById('app');
+  if(!state.loaded) return;
+
+  if(!state.session) {
+    app.innerHTML = renderLogin();
+    return;
+  }
+
+  const p = state.perfilAtivo;
+
+  app.innerHTML = `
+    <div class="wrap">
+      <div class="topbar">
+        <div class="left">
+          <button class="avatar" style="background:${state.perfis[p].cor}" onclick="toggleMenu()">${state.perfis[p].nome.slice(0,2)}</button>
+          <div class="wordmark">Kopple<span>.</span></div>
+        </div>
+        <div>
+          <button class="menuBtn" onclick="toggleMenu()">Configurações ⚙️</button>
+        </div>
+      </div>
+
+      <div class="menuOverlay ${state.menuOpen ? 'open' : ''}" onclick="toggleMenu()"></div>
+      <div class="menuPanel ${state.menuOpen ? 'open' : ''}">
+        <h3>Opções do Kopple</h3>
+        <div class="menuItem" onclick="exportToExcel()">📥 Backup para Excel</div>
+        <div class="menuItem" onclick="changeTab('treinos')">💪 Visualizar Treinos</div>
+        <div class="menuItem" onclick="changeTab('progresso')">📈 Histórico de Evolução</div>
+        <div class="menuItem" onclick="changeTab('calc')">🍎 TMB & Nutrição</div>
+        <div class="menuItem" onclick="changeTab('mural')">🏆 Metas e Mural</div>
+        
+        <div class="tear"></div>
+        <div class="field">
+          <label>Mudar cor do perfil</label>
+          <div class="color-picker-wrap">
+            <input type="color" value="${state.perfis[p].cor}" onchange="updateColor('${p}', this.value)">
+          </div>
+        </div>
+
+        <div class="menuItem danger" onclick="logout()" style="margin-top:20px;">🚪 Mudar de Perfil (Sair)</div>
+      </div>
+
+      <div id="contentArea">${renderContent()}</div>
+
+      <div class="bottomNav">
+        <div class="bottomNavInner">
+          <button class="navBtn ${state.tab === 'treinos' ? 'active' : ''}" onclick="changeTab('treinos')">
+            ${ICONS.treinos}
+            <span>Treino</span>
+          </button>
+          <button class="navBtn ${state.tab === 'progresso' ? 'active' : ''}" onclick="changeTab('progresso')">
+            ${ICONS.progresso}
+            <span>Evolução</span>
+          </button>
+          <button class="navBtn ${state.tab === 'calc' ? 'active' : ''}" onclick="changeTab('calc')">
+            ${ICONS.calc}
+            <span>Nutrição</span>
+          </button>
+          <button class="navBtn ${state.tab === 'mural' ? 'active' : ''}" onclick="changeTab('mural')">
+            ${ICONS.mural}
+            <span>Mural</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="timerBar" id="timerContainer" style="display:none;">
+        <div>Tempo de descanso: <span class="time" id="timerDisplay">01:30</span></div>
+        <div class="timerBtnRow">
+          <button class="btn small" id="timerPlayBtn" onclick="toggleTimerRun()">PAUSAR</button>
+          <button class="btn small ghost" onclick="stopTimer()">FECHAR</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  updateTimerUI();
+}
+
+function toggleMenu() {
+  state.menuOpen = !state.menuOpen;
+  render();
+}
+
+window.onload = loadAll;
 </script>
 </body>
 </html>
